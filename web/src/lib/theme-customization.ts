@@ -111,9 +111,13 @@ export type ThemeCustomization = {
   contentLayout: ContentLayout
 }
 
+// Brand defaults: the warm Anthropic palette for every visitor. The console
+// font stays sans because the preset's serif falls back to Songti/SimSun for
+// Chinese, which reads poorly in dense tables; the home page sets its own
+// serif headings.
 export const DEFAULT_THEME_CUSTOMIZATION: ThemeCustomization = {
-  preset: 'default',
-  font: 'default',
+  preset: 'anthropic',
+  font: 'sans',
   radius: 'default',
   scale: 'default',
   contentLayout: 'full',
