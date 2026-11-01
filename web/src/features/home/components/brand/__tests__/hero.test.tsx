@@ -109,7 +109,7 @@ it('names the hero heading with the slogan for the first model', async () => {
   expect(
     await screen.findByRole('heading', {
       level: 1,
-      name: "If it says Claude, it's Claude",
+      name: 'Imagine without limits, in GPT',
     })
   ).toBeInTheDocument()
 })

@@ -35,18 +35,19 @@ const APPS = [
 ] as const
 
 const MODELS = [
-  { icon: 'Claude', name: 'Claude' },
   { icon: 'OpenAI', name: 'GPT' },
+  { icon: 'Claude', name: 'Claude' },
   { icon: 'Gemini', name: 'Gemini' },
   { icon: 'DeepSeek', name: 'DeepSeek' },
   { icon: 'Qwen', name: 'Qwen' },
+  { icon: 'ChatGLM', name: 'GLM' },
   { icon: 'Kimi', name: 'Kimi' },
 ] as const
 
 const AUTOPLAY_MS = 2600
 // Orbit size of each model as a share of the outermost orbit.
 // The inner orbit clears the star so planets never cover its label.
-const ORBITS = [0.58, 0.66, 0.75, 0.83, 0.92, 1]
+const ORBITS = [0.56, 0.63, 0.71, 0.78, 0.86, 0.93, 1]
 // Vertical squash of the orbits: how far the system is tilted toward us.
 const ORBIT_TILT = 0.5
 const STAR_SIZE = 132

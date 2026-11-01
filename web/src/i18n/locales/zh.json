@@ -7397,6 +7397,7 @@
     "{{value}} tokens": "{{value}} tokens",
     "Card previews use example data.": "卡片中的预览均为示例数据。",
     "If it says {{model}}, it's {{model}}": "说是 {{model}}，就是 {{model}}",
+    "Imagine without limits, in {{model}}": "想象无界，尽在 {{model}}",
     "{{name}} connects straight to each provider's official API, with no watered-down or swapped models. Every call's model is in your usage log.": "{{name}} 直连各家官方接口，不掺水、不偷换，每次调用用了哪个模型，日志里都查得到。",
     "24 hours": "24 小时",
     "7 days": "7 天",

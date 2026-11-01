@@ -33,7 +33,7 @@ import { PicoMark } from './primitives'
 
 // Models the slogan cycles through. Only list models served from the
 // provider's official API: the slogan promises it.
-const SLOGAN_MODELS = ['Claude', 'GPT', 'Gemini', 'DeepSeek']
+const SLOGAN_MODELS = ['GPT', 'Claude', 'Gemini', 'DeepSeek', 'Qwen', 'GLM', 'Kimi']
 // Sequence: the field arrives out of warp, the wordmark is projected in as
 // it slows, then the slogan writes itself and the rest of the hero follows.
 const PROJECT_MS = 900
@@ -103,7 +103,7 @@ export function BrandHero(props: BrandHeroProps) {
   const { t } = useTranslation()
   const { status } = useStatus()
   const brandName = useBrandName()
-  const sloganTemplate = t("If it says {{model}}, it's {{model}}", {
+  const sloganTemplate = t('Imagine without limits, in {{model}}', {
     model: SLOGAN_MODEL_SLOT,
   })
   // Only link docs the operator configured; the upstream fallback points at

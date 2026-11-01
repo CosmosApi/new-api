@@ -47,15 +47,15 @@ function renderRouter() {
 it('routes to the first model and marks only it as pressed on load', () => {
   renderRouter()
 
-  expect(screen.getByRole('button', { name: 'Claude' })).toHaveAttribute(
+  expect(screen.getByRole('button', { name: 'GPT' })).toHaveAttribute(
     'aria-pressed',
     'true'
   )
-  expect(screen.getByRole('button', { name: 'GPT' })).toHaveAttribute(
+  expect(screen.getByRole('button', { name: 'Claude' })).toHaveAttribute(
     'aria-pressed',
     'false'
   )
-  expect(screen.getByText('Routing to Claude')).toBeInTheDocument()
+  expect(screen.getByText('Routing to GPT')).toBeInTheDocument()
 })
 
 it('switches the route to the model the visitor picks', async () => {
@@ -68,7 +68,7 @@ it('switches the route to the model the visitor picks', async () => {
     'aria-pressed',
     'true'
   )
-  expect(screen.getByRole('button', { name: 'Claude' })).toHaveAttribute(
+  expect(screen.getByRole('button', { name: 'GPT' })).toHaveAttribute(
     'aria-pressed',
     'false'
   )
