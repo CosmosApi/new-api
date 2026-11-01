@@ -82,6 +82,9 @@ export function useSidebarData(badges: SidebarBadges = {}): SidebarData {
             title: t('Dashboard'),
             url: '/dashboard/models',
             icon: LayoutDashboard,
+            // Customers get everything they need on the overview; the
+            // platform-wide analytics are for operators.
+            requiredRole: ROLE.ADMIN,
           },
           {
             title: t('API Keys'),
