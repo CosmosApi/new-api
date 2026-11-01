@@ -321,3 +321,69 @@ export function summarizeKeyUsage(
     })
     .sort((a, b) => b.quota - a.quota || a.id - b.id)
 }
+
+/** Weeks the activity matrix looks back over, whatever range is selected. */
+export const ACTIVITY_WEEKS = 4
+
+export interface ActivityCell {
+  /** 0 = Monday ... 6 = Sunday, in the visitor's time zone. */
+  weekday: number
+  /** 0..23, local time. */
+  hour: number
+  count: number
+  quota: number
+}
+
+export interface ActivityMatrix {
+  /** 7 rows (Monday first) of 24 cells. */
+  rows: ActivityCell[][]
+  total: number
+  maxCount: number
+  peak: ActivityCell | null
+  /** Share of calls made Monday to Friday, 0..1. */
+  weekdayShare: number
+}
+
+/** Calls per local weekday and hour over the last four weeks. */
+export function buildActivityMatrix(
+  rows: readonly QuotaDataItem[],
+  now: number
+): ActivityMatrix {
+  const matrix: ActivityCell[][] = Array.from({ length: 7 }, (_, weekday) =>
+    Array.from({ length: 24 }, (_, hour) => ({
+      weekday,
+      hour,
+      count: 0,
+      quota: 0,
+    }))
+  )
+  const start = now - ACTIVITY_WEEKS * 7 * DAY
+  let total = 0
+  let weekdayCalls = 0
+
+  for (const row of rows) {
+    const ts = Number(row.created_at) || 0
+    if (ts < start || ts > now) continue
+    const date = new Date(ts * 1000)
+    const weekday = (date.getDay() + 6) % 7
+    const cell = matrix[weekday][date.getHours()]
+    const count = Number(row.count) || 0
+    cell.count += count
+    cell.quota += Number(row.quota) || 0
+    total += count
+    if (weekday < 5) weekdayCalls += count
+  }
+
+  let peak: ActivityCell | null = null
+  for (const cell of matrix.flat()) {
+    if (cell.count > 0 && (!peak || cell.count > peak.count)) peak = cell
+  }
+
+  return {
+    rows: matrix,
+    total,
+    maxCount: peak?.count ?? 0,
+    peak,
+    weekdayShare: total > 0 ? weekdayCalls / total : 0,
+  }
+}

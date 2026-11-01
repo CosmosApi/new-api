@@ -30,13 +30,14 @@ import { ROLE } from '@/lib/roles'
 import { useAuthStore } from '@/stores/auth-store'
 
 import {
-  useOverviewBalance,
+  useOverviewAccount,
   useOverviewKeyUsage,
   useOverviewUsage,
   useRecentCalls,
 } from '../../hooks/use-brand-overview-data'
 import { useDashboardContentVisibility } from '../../hooks/use-status-data'
 import {
+  buildActivityMatrix,
   buildModelBreakdown,
   buildSpendTrend,
   estimateRunway,
@@ -47,6 +48,8 @@ import {
 import { AnnouncementsPanel } from '../overview/announcements-panel'
 import { FAQPanel } from '../overview/faq-panel'
 import { PerformanceHealthPanel } from '../overview/performance-health-panel'
+import { ActivityHeatmap } from './activity-heatmap'
+import { GettingStarted } from './getting-started'
 import { KeyUsage } from './key-usage'
 import { ModelReceipt } from './model-receipt'
 import { RecentCalls } from './recent-calls'
@@ -55,6 +58,7 @@ import { SpendTrend } from './spend-trend'
 import { UsageSummaryCard } from './usage-summary'
 
 const RANGE_STORAGE_KEY = 'picoapi:overview:range'
+const ONBOARDING_DISMISSED_KEY = 'picoapi:overview:onboarding-dismissed'
 const RANGES: readonly OverviewRange[] = ['24h', '7d', '30d']
 
 function readSavedRange(): OverviewRange {
@@ -68,16 +72,28 @@ function readSavedRange(): OverviewRange {
   }
 }
 
+function readOnboardingDismissed(): boolean {
+  try {
+    return window.localStorage.getItem(ONBOARDING_DISMISSED_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
 /**
  * PicoAPI overview: the account read as a bill. What was spent, on which
- * models and keys, how long the balance lasts, and the latest calls.
+ * models and keys, when, how long the balance lasts, and the latest calls.
  */
 export function BrandOverviewPage() {
   const { t } = useTranslation()
   const isAdmin = useAuthStore((s) => (s.auth.user?.role ?? 0) >= ROLE.ADMIN)
   const [range, setRange] = useState<OverviewRange>(readSavedRange)
   const usage = useOverviewUsage()
-  const balance = useOverviewBalance()
+  const account = useOverviewAccount()
+  const balance = account.quota
+  const [onboardingDismissed, setOnboardingDismissed] = useState(
+    readOnboardingDismissed
+  )
   const keyUsage = useOverviewKeyUsage(range)
   const recent = useRecentCalls()
   const visibility = useDashboardContentVisibility()
@@ -91,6 +107,7 @@ export function BrandOverviewPage() {
       breakdown: buildModelBreakdown(data, range, now),
       trend: buildSpendTrend(data, range, now),
       runway: estimateRunway(balance, data, now),
+      activity: buildActivityMatrix(data, now),
     }
   }, [rows, range, now, balance])
   const keyRows = useMemo(
@@ -112,6 +129,30 @@ export function BrandOverviewPage() {
     '30d': t('30 days'),
   }
   const showContent = visibility.announcements || visibility.faq
+
+  // Onboarding waits for the account and key list, so it never flashes for
+  // an account that is already set up.
+  const steps = {
+    hasKey: keyUsage.keys.length > 0,
+    hasBalance: account.quota > 0 || account.usedQuota > 0,
+    hasCalls: account.requestCount > 0,
+  }
+  // Before the first call every chart below would be empty; show only the
+  // onboarding, summary and balance until there is something to read.
+  const hasHistory = account.requestCount > 0 || (rows?.length ?? 0) > 0
+  const showOnboarding =
+    account.loaded &&
+    keyUsage.keysLoaded &&
+    !onboardingDismissed &&
+    !(steps.hasKey && steps.hasBalance && steps.hasCalls)
+  const dismissOnboarding = () => {
+    setOnboardingDismissed(true)
+    try {
+      window.localStorage.setItem(ONBOARDING_DISMISSED_KEY, '1')
+    } catch {
+      // Not remembered across reloads in private mode; fine.
+    }
+  }
 
   return (
     <SectionPageLayout>
@@ -143,10 +184,16 @@ export function BrandOverviewPage() {
           </div>
         ) : (
           <CardStaggerContainer className='grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]'>
+            {showOnboarding && (
+              <CardStaggerItem className='lg:col-span-2'>
+                <GettingStarted {...steps} onDismiss={dismissOnboarding} />
+              </CardStaggerItem>
+            )}
             <CardStaggerItem>
               <UsageSummaryCard
                 range={range}
                 summary={derived.summary}
+                hideCallToAction={showOnboarding}
                 className='h-full'
               />
             </CardStaggerItem>
@@ -157,25 +204,36 @@ export function BrandOverviewPage() {
                 className='h-full'
               />
             </CardStaggerItem>
-            <CardStaggerItem className='lg:col-span-2'>
-              <SpendTrend
-                range={range}
-                buckets={derived.trend}
-                totalQuota={derived.summary.current.quota}
-              />
-            </CardStaggerItem>
-            <CardStaggerItem className='lg:col-span-2'>
-              <div className='grid gap-4 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]'>
-                <ModelReceipt rows={derived.breakdown} />
-                <KeyUsage rows={keyRows} loading={keyUsage.loading} now={now} />
-              </div>
-            </CardStaggerItem>
-            <CardStaggerItem className='lg:col-span-2'>
-              <RecentCalls
-                logs={recent.data ?? []}
-                loading={recent.isLoading}
-              />
-            </CardStaggerItem>
+            {hasHistory && (
+              <>
+                <CardStaggerItem className='lg:col-span-2'>
+                  <SpendTrend
+                    range={range}
+                    buckets={derived.trend}
+                    totalQuota={derived.summary.current.quota}
+                  />
+                </CardStaggerItem>
+                <CardStaggerItem className='lg:col-span-2'>
+                  <ModelReceipt rows={derived.breakdown} />
+                </CardStaggerItem>
+                <CardStaggerItem className='lg:col-span-2'>
+                  <div className='grid gap-4 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]'>
+                    <ActivityHeatmap matrix={derived.activity} now={now} />
+                    <KeyUsage
+                      rows={keyRows}
+                      loading={keyUsage.loading}
+                      now={now}
+                    />
+                  </div>
+                </CardStaggerItem>
+                <CardStaggerItem className='lg:col-span-2'>
+                  <RecentCalls
+                    logs={recent.data ?? []}
+                    loading={recent.isLoading}
+                  />
+                </CardStaggerItem>
+              </>
+            )}
             {showContent && (
               <CardStaggerItem className='lg:col-span-2'>
                 <div className='grid gap-4 lg:grid-cols-2'>

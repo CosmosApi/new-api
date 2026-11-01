@@ -22,6 +22,7 @@ import type { ApiKey } from '@/features/keys/types'
 
 import type { FlowQuotaDataItem, QuotaDataItem } from '../../types'
 import {
+  buildActivityMatrix,
   buildModelBreakdown,
   buildSpendTrend,
   estimateRunway,
@@ -234,5 +235,50 @@ describe('summarizeKeyUsage', () => {
 
     expect(rows.map((r) => r.name)).toEqual(['old-key', null])
     expect(rows[0].key).toBeNull()
+  })
+})
+
+describe('buildActivityMatrix', () => {
+  // Local wall-clock times, so the test holds in any time zone.
+  const monday9 = new Date(2027, 0, 4, 9, 30).getTime() / 1000
+  const saturday22 = new Date(2027, 0, 9, 22, 10).getTime() / 1000
+  const now = new Date(2027, 0, 10, 12, 0).getTime() / 1000
+
+  function at(ts: number, count: number): QuotaDataItem {
+    return { created_at: ts, model_name: 'm', quota: count * 10, count }
+  }
+
+  it('files calls under the local weekday, Monday first, and hour', () => {
+    const matrix = buildActivityMatrix([at(monday9, 3), at(saturday22, 1)], now)
+
+    expect(matrix.rows).toHaveLength(7)
+    expect(matrix.rows[0]).toHaveLength(24)
+    expect(matrix.rows[0][9]).toMatchObject({
+      weekday: 0,
+      hour: 9,
+      count: 3,
+      quota: 30,
+    })
+    expect(matrix.rows[5][22].count).toBe(1)
+    expect(matrix.total).toBe(4)
+    expect(matrix.weekdayShare).toBe(0.75)
+  })
+
+  it('adds up the same slot across weeks and reports it as the peak', () => {
+    const matrix = buildActivityMatrix(
+      [at(monday9, 2), at(monday9 - 7 * DAY, 2), at(saturday22, 3)],
+      now
+    )
+
+    expect(matrix.peak).toMatchObject({ weekday: 0, hour: 9, count: 4 })
+    expect(matrix.maxCount).toBe(4)
+  })
+
+  it('ignores calls older than four weeks and has no peak without calls', () => {
+    const matrix = buildActivityMatrix([at(monday9 - 5 * 7 * DAY, 9)], now)
+
+    expect(matrix.total).toBe(0)
+    expect(matrix.peak).toBeNull()
+    expect(matrix.weekdayShare).toBe(0)
   })
 })

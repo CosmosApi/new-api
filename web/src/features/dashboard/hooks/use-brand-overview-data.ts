@@ -67,18 +67,36 @@ export function useOverviewUsage() {
   })
 }
 
-/** Remaining balance, refreshed from the server rather than the session. */
-export function useOverviewBalance() {
-  const sessionQuota = useAuthStore((s) => s.auth.user?.quota)
+export interface OverviewAccount {
+  quota: number
+  usedQuota: number
+  requestCount: number
+  /** False until the server answered, so onboarding never flashes. */
+  loaded: boolean
+}
+
+/** Balance and lifetime usage, refreshed from the server, not the session. */
+export function useOverviewAccount(): OverviewAccount {
+  const sessionUser = useAuthStore((s) => s.auth.user)
   const query = useQuery({
     queryKey: ['dashboard', 'brand-overview', 'self'],
     queryFn: async () => {
-      const res = await getSelf()
-      return Number(res?.data?.quota ?? 0)
+      const data = (await getSelf())?.data ?? {}
+      return {
+        quota: Number(data.quota ?? 0),
+        usedQuota: Number(data.used_quota ?? 0),
+        requestCount: Number(data.request_count ?? 0),
+      }
     },
     staleTime: 60 * 1000,
   })
-  return query.data ?? Number(sessionQuota ?? 0)
+  return {
+    quota: query.data?.quota ?? Number(sessionUser?.quota ?? 0),
+    usedQuota: query.data?.usedQuota ?? Number(sessionUser?.used_quota ?? 0),
+    requestCount:
+      query.data?.requestCount ?? Number(sessionUser?.request_count ?? 0),
+    loaded: query.isSuccess,
+  }
 }
 
 /** Spend per key for the selected range, and the key list to name them. */
@@ -106,6 +124,7 @@ export function useOverviewKeyUsage(range: OverviewRange) {
     flowRows: flow.data ?? [],
     keys: keys.data ?? [],
     loading: flow.isLoading || keys.isLoading,
+    keysLoaded: keys.isSuccess,
   }
 }
 

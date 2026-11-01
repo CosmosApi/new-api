@@ -39,6 +39,8 @@ const SENTENCE_KEYS: Record<OverviewRange, string> = {
 interface UsageSummaryCardProps {
   range: OverviewRange
   summary: UsageSummary
+  /** Set while the onboarding card already offers the next step. */
+  hideCallToAction?: boolean
   className?: string
 }
 
@@ -64,10 +66,12 @@ export function UsageSummaryCard(props: UsageSummaryCardProps) {
             'Create an API key, point your client at this site and your usage will appear here.'
           )}
         </p>
-        <Button size='sm' className='group mt-5' render={<Link to='/keys' />}>
-          {t('Create API Key')}
-          <ArrowRight className='transition-transform group-hover:translate-x-0.5' />
-        </Button>
+        {!props.hideCallToAction && (
+          <Button size='sm' className='group mt-5' render={<Link to='/keys' />}>
+            {t('Create API Key')}
+            <ArrowRight className='transition-transform group-hover:translate-x-0.5' />
+          </Button>
+        )}
       </OverviewCard>
     )
   }

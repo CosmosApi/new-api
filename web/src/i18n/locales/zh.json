@@ -7437,6 +7437,20 @@
     "{{percent}} less than the period before": "比上一个周期少 {{percent}}",
     "{{percent}} more than the period before": "比上一个周期多 {{percent}}",
     "{{remain}} left": "剩余 {{remain}}",
-    "Average per call": "平均每次"
+    "Average per call": "平均每次",
+    "Activity": "活跃时段",
+    "Calls by weekday and hour, last 4 weeks": "近 4 周每周各天、各小时的调用量",
+    "Busiest slot: {{weekday}} {{start}}–{{end}}. Weekdays account for {{share}} of calls.": "最忙的时段是{{weekday}} {{start}}–{{end}}，工作日的调用占 {{share}}。",
+    "No calls in the last 4 weeks.": "近 4 周没有调用。",
+    "{{count}} calls in total.": "共 {{count}} 次调用。",
+    "Get started with {{name}}": "开始使用 {{name}}",
+    "{{done}} of 3 steps done": "已完成 {{done}}/3 步",
+    "Dismiss": "关闭",
+    "One key per project makes spend easy to tell apart.": "每个项目单独一个密钥，花费一目了然。",
+    "Top up your balance": "为账户充值",
+    "Calls are billed per token from your balance.": "调用按 token 从余额中扣费。",
+    "Send your first request": "发送第一个请求",
+    "Use the command below, or point any OpenAI-compatible client at the base URL.": "用下面的命令试一下，或者把任意兼容 OpenAI 的客户端指向这个 API 地址。",
+    "Open Playground": "打开游乐场"
   }
 }

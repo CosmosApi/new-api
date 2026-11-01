@@ -7437,6 +7437,20 @@
     "{{percent}} less than the period before": "{{percent}} less than the period before",
     "{{percent}} more than the period before": "{{percent}} more than the period before",
     "{{remain}} left": "{{remain}} left",
-    "Average per call": "Average per call"
+    "Average per call": "Average per call",
+    "Activity": "Activity",
+    "Calls by weekday and hour, last 4 weeks": "Calls by weekday and hour, last 4 weeks",
+    "Busiest slot: {{weekday}} {{start}}–{{end}}. Weekdays account for {{share}} of calls.": "Busiest slot: {{weekday}} {{start}}–{{end}}. Weekdays account for {{share}} of calls.",
+    "No calls in the last 4 weeks.": "No calls in the last 4 weeks.",
+    "{{count}} calls in total.": "{{count}} calls in total.",
+    "Get started with {{name}}": "Get started with {{name}}",
+    "{{done}} of 3 steps done": "{{done}} of 3 steps done",
+    "Dismiss": "Dismiss",
+    "One key per project makes spend easy to tell apart.": "One key per project makes spend easy to tell apart.",
+    "Top up your balance": "Top up your balance",
+    "Calls are billed per token from your balance.": "Calls are billed per token from your balance.",
+    "Send your first request": "Send your first request",
+    "Use the command below, or point any OpenAI-compatible client at the base URL.": "Use the command below, or point any OpenAI-compatible client at the base URL.",
+    "Open Playground": "Open Playground"
   }
 }

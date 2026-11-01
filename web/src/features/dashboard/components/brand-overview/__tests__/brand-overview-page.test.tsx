@@ -29,7 +29,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 
 import { getApiKeys } from '@/features/keys/api'
 import { getUserLogs } from '@/features/usage-logs/api'
-import { getSelf } from '@/lib/api'
+import { getSelf, getUserModels } from '@/lib/api'
 import { STATUS_QUERY_KEY } from '@/lib/status-query'
 
 import { getFlowQuotaDates, getUserQuotaDates } from '../../../api'
@@ -45,6 +45,7 @@ vi.mock('@/features/usage-logs/api', () => ({ getUserLogs: vi.fn() }))
 vi.mock('@/lib/api', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/lib/api')>()),
   getSelf: vi.fn(),
+  getUserModels: vi.fn(),
 }))
 
 const HOUR = 3600
@@ -91,16 +92,39 @@ function log(id: number, extra: Record<string, unknown> = {}) {
   }
 }
 
-beforeEach(() => {
-  vi.mocked(getSelf).mockResolvedValue({
-    success: true,
-    data: { quota: 500_000 },
-  })
-  vi.mocked(getFlowQuotaDates).mockResolvedValue({ success: true, data: [] })
+// An established account by default: it has a key, a balance and calls, so
+// the onboarding card stays out of the way.
+const establishedKey = {
+  id: 1,
+  name: 'production',
+  key: 'x',
+  status: 1,
+  remain_quota: 0,
+  used_quota: 0,
+  unlimited_quota: true,
+  expired_time: -1,
+  created_time: 0,
+  accessed_time: 0,
+  model_limits_enabled: false,
+}
+
+function mockAccount(self: Record<string, number>, keys: unknown[]) {
+  vi.mocked(getSelf).mockResolvedValue({ success: true, data: self })
   vi.mocked(getApiKeys).mockResolvedValue({
     success: true,
-    data: { items: [], total: 0, page: 1, page_size: 100 },
+    data: { items: keys, total: keys.length, page: 1, page_size: 100 },
+  } as never)
+}
+
+beforeEach(() => {
+  mockAccount({ quota: 500_000, used_quota: 1000, request_count: 3 }, [
+    establishedKey,
+  ])
+  vi.mocked(getUserModels).mockResolvedValue({
+    success: true,
+    data: ['claude-sonnet'],
   })
+  vi.mocked(getFlowQuotaDates).mockResolvedValue({ success: true, data: [] })
   vi.mocked(getUserLogs).mockResolvedValue({
     success: true,
     data: { items: [], total: 0, page: 1, page_size: 30 },
@@ -206,4 +230,53 @@ it('flags a recent call whose upstream answered with another model', async () =>
   const section = within(list as HTMLElement)
   expect(await section.findAllByRole('listitem')).toHaveLength(2)
   expect(section.getByText('Response model: other-model')).toBeInTheDocument()
+})
+
+it('walks a new account through the first steps, ticking the ones done', async () => {
+  mockAccount({ quota: 100_000, used_quota: 0, request_count: 0 }, [])
+  vi.mocked(getUserQuotaDates).mockResolvedValue({ success: true, data: [] })
+
+  await renderPage()
+
+  const card = within(
+    (await screen.findByText('Get started with PicoAPI')).closest(
+      'section'
+    ) as HTMLElement
+  )
+  expect(card.getByText('1 of 3 steps done')).toBeInTheDocument()
+  expect(card.getByText('(Done)')).toBeInTheDocument()
+  expect(card.getByRole('button', { name: 'Create API Key' })).toHaveAttribute(
+    'href',
+    '/keys'
+  )
+  expect(await card.findByText(/"model": "claude-sonnet"/)).toBeInTheDocument()
+  expect(
+    screen.getAllByRole('button', { name: 'Create API Key' })
+  ).toHaveLength(1)
+})
+
+it('keeps the onboarding card closed after it is dismissed', async () => {
+  const user = userEvent.setup()
+  mockAccount({ quota: 0, used_quota: 0, request_count: 0 }, [])
+  vi.mocked(getUserQuotaDates).mockResolvedValue({ success: true, data: [] })
+  await renderPage()
+
+  await user.click(await screen.findByRole('button', { name: 'Dismiss' }))
+
+  expect(screen.queryByText('Get started with PicoAPI')).not.toBeInTheDocument()
+  expect(localStorage.getItem('picoapi:overview:onboarding-dismissed')).toBe(
+    '1'
+  )
+})
+
+it('shows no onboarding to an account that has finished every step', async () => {
+  vi.mocked(getUserQuotaDates).mockResolvedValue({
+    success: true,
+    data: [usageRow(2, 'claude-sonnet', 300)],
+  })
+
+  await renderPage()
+  await screen.findByText(/In the last 7 days/)
+
+  expect(screen.queryByText('Get started with PicoAPI')).not.toBeInTheDocument()
 })
