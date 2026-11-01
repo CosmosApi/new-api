@@ -83,6 +83,25 @@ For commercial licensing, please contact support@quantumnous.com
   }
 }
 
+/* ── Console typography ── */
+/* Big figures (balances, totals). Monospace in other presets; under the
+ * brand preset they use the editorial serif, as the home page headings do.
+ * The rules below sit outside Tailwind's layers on purpose, so they win over
+ * the font-bold / font-semibold utilities on the same elements. */
+@utility font-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+[data-theme-preset='anthropic'] .font-figure {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+[data-theme-preset='anthropic'] [data-slot='page-title'] {
+  font-family: var(--font-serif);
+  font-weight: 500;
+}
+
 /* ── Slogan dot landing ── */
 .brand-ripple {
   animation: brand-ripple 0.9s ease-out 0.15s both;
