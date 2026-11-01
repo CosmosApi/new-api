@@ -40,7 +40,7 @@ export function SpotlightCard(props: SpotlightCardProps) {
     <div
       onPointerMove={trackPointer}
       className={cn(
-        'group/spot bg-card relative overflow-hidden rounded-2xl border transition-colors hover:border-primary/40',
+        'group/spot brand-card border-border/60 hover:border-primary/40 relative overflow-hidden rounded-2xl border transition-colors',
         props.className
       )}
     >
@@ -58,9 +58,9 @@ interface PicoMarkProps {
 }
 
 /**
- * Brand mark: a lowercase "p" whose bowl holds the clay dot. Same geometry
- * as public/brand/picoapi-mark.svg; the ink follows the text colour so it
- * works in both themes. Size it by height, the width follows.
+ * Brand mark: a lowercase "p" whose bowl holds the clay dot. The ink follows
+ * the text colour so it works in both themes. Size it by height, the width
+ * follows.
  */
 export function PicoMark(props: PicoMarkProps) {
   return (

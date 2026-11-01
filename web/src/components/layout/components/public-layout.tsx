@@ -16,6 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { PicoDotField } from '@/components/backgrounds/pico-dot-field'
+
 import type { TopNavLink } from '../types'
 import { PublicHeader, type PublicHeaderProps } from './public-header'
 
@@ -34,7 +36,8 @@ type PublicLayoutProps = {
 
 export function PublicLayout(props: PublicLayoutProps) {
   return (
-    <div className='bg-background text-foreground relative min-h-svh overflow-x-clip'>
+    <div className='pico-public bg-background text-foreground relative min-h-svh overflow-x-clip'>
+      <PicoDotField />
       <PublicHeader
         navContent={props.navContent}
         navLinks={props.navLinks}

@@ -199,7 +199,7 @@ export function PublicHeader(props: PublicHeaderProps) {
 
   return (
     <>
-      <header className='pointer-events-none fixed inset-x-0 top-0 z-50'>
+      <header className='pico-public-header pointer-events-none fixed inset-x-0 top-0 z-50'>
         <div
           className={cn(
             'pointer-events-auto mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
@@ -208,7 +208,7 @@ export function PublicHeader(props: PublicHeaderProps) {
         >
           <nav
             className={cn(
-              'flex items-center justify-between gap-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+              'pico-public-nav flex items-center justify-between gap-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
               scrolled
                 ? 'bg-background/60 ring-border/50 h-12 rounded-2xl pr-1.5 pl-4 shadow-[0_2px_16px_-6px_rgba(0,0,0,0.08),0_0_0_0.5px_rgba(0,0,0,0.02)] ring-[0.5px] backdrop-blur-2xl dark:shadow-[0_2px_16px_-6px_rgba(0,0,0,0.4)]'
                 : 'h-16 px-2'
@@ -224,7 +224,7 @@ export function PublicHeader(props: PublicHeaderProps) {
                   {logoContent}
                 </div>
                 <span
-                  className='max-w-48 truncate text-sm font-semibold tracking-tight'
+                  className='max-w-48 truncate font-serif text-[15px] font-medium tracking-tight'
                   title={displaySiteName}
                 >
                   {loading ? (
@@ -271,8 +271,8 @@ export function PublicHeader(props: PublicHeaderProps) {
                     className={cn(
                       'min-w-0 truncate rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-200',
                       isActive
-                        ? 'text-foreground'
-                        : 'text-muted-foreground hover:text-foreground',
+                        ? 'bg-primary/8 text-foreground'
+                        : 'text-muted-foreground hover:bg-primary/5 hover:text-foreground',
                       link.disabled && 'pointer-events-none opacity-50'
                     )}
                   >
@@ -323,6 +323,8 @@ export function PublicHeader(props: PublicHeaderProps) {
                 className='size-9'
                 onClick={() => setMobileOpen((v) => !v)}
                 aria-label={t('Toggle navigation menu')}
+                aria-expanded={mobileOpen}
+                aria-controls='pico-mobile-navigation'
               >
                 <div className='relative size-4'>
                   <span
@@ -352,6 +354,9 @@ export function PublicHeader(props: PublicHeaderProps) {
 
       {/* Mobile full-screen overlay */}
       <div
+        id='pico-mobile-navigation'
+        inert={!mobileOpen}
+        aria-hidden={!mobileOpen}
         className={cn(
           'bg-background/98 fixed inset-0 z-40 backdrop-blur-2xl transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:pointer-events-none lg:hidden',
           mobileOpen

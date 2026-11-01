@@ -158,8 +158,8 @@ export function Footer(props: FooterProps) {
     demoSiteEnabled,
   } = useSystemConfig()
 
-  const displayLogo = systemLogo || props.logo || '/logo.png'
-  const displayName = systemName || props.name || 'New API'
+  const displayLogo = systemLogo || props.logo || '/pico-mark.svg'
+  const displayName = systemName || props.name || 'PicoAPI'
   const isDemoSiteMode = Boolean(demoSiteEnabled)
   const currentYear = new Date().getFullYear()
 
@@ -260,7 +260,7 @@ export function Footer(props: FooterProps) {
                 alt={displayName}
                 className='size-7 rounded-lg object-contain'
               />
-              <span className='text-sm font-semibold tracking-tight'>
+              <span className='font-serif text-base font-medium tracking-tight'>
                 {displayName}
               </span>
             </Link>

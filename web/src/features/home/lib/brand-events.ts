@@ -18,7 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 /**
  * DOM event a home page element dispatches (bubbling) to start a ripple in
- * the enclosing dot field, at a viewport position.
+ * the dot field behind the page, at a viewport position.
  */
 export const BRAND_RIPPLE_EVENT = 'brand:ripple'
 

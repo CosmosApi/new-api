@@ -44,7 +44,13 @@ export function RankingsHero(props: RankingsHeroProps) {
   return (
     <section className='space-y-5'>
       <div className='space-y-2'>
-        <h1 className='text-[clamp(1.75rem,4vw,2.5rem)] leading-[1.15] font-bold tracking-tight'>
+        <div className='pico-eyebrow mb-4 inline-flex items-center gap-2 rounded-full border px-3 py-1.5'>
+          <span className='pico-eyebrow-dot size-1.5 rounded-full' />
+          <span className='font-mono text-[10px] tracking-[0.14em]'>
+            PicoAPI · {t('Your models, connected')}
+          </span>
+        </div>
+        <h1 className='text-[clamp(1.75rem,4vw,2.5rem)] leading-[1.15] font-bold tracking-[-0.04em]'>
           {t('Rankings')}
         </h1>
         <p className='text-muted-foreground/80 max-w-2xl text-sm'>

@@ -51,6 +51,8 @@ interface BrandSloganProps {
   /** Slogan with `SLOGAN_MODEL_SLOT` wherever the model name goes. */
   template: string
   models: readonly string[]
+  /** Wait before the pen starts writing, in ms. */
+  delay?: number
 }
 
 /**
@@ -61,6 +63,7 @@ interface BrandSloganProps {
  */
 export function BrandSlogan(props: BrandSloganProps) {
   const reduceMotion = useReducedMotion()
+  const startDelay = props.delay ?? 0
   const [phase, setPhase] = useState<Phase>('intro')
   const [pen, setPen] = useState(0)
   const [modelIndex, setModelIndex] = useState(0)
@@ -121,9 +124,11 @@ export function BrandSlogan(props: BrandSloganProps) {
       }, IDLE_MS)
     } else if (pen >= stops) {
       timer = window.setTimeout(() => {
-        if (phase === 'sweep') {
-          setModelIndex((i) => (i + 1) % props.models.length)
-        }
+        const landed =
+          phase === 'sweep'
+            ? (modelIndex + 1) % props.models.length
+            : modelIndex
+        setModelIndex(landed)
         setPhase('idle')
         const rect = penRef.current?.getBoundingClientRect()
         if (rect) {
@@ -140,14 +145,15 @@ export function BrandSlogan(props: BrandSloganProps) {
       }, LAND_MS)
     } else {
       const firstSweepStep = phase === 'sweep' && pen === 0
+      const firstIntroStep = phase === 'intro' && pen === 0
       const stepMs = phase === 'intro' ? INTRO_MS / stops : SWEEP_STEP_MS
-      timer = window.setTimeout(
-        () => setPen((p) => p + 1),
-        firstSweepStep ? SWEEP_HOLD_MS : stepMs
-      )
+      let wait = stepMs
+      if (firstSweepStep) wait = SWEEP_HOLD_MS
+      if (firstIntroStep) wait = startDelay + stepMs
+      timer = window.setTimeout(() => setPen((p) => p + 1), wait)
     }
     return () => window.clearTimeout(timer)
-  }, [phase, pen, stops, reduceMotion, props.models.length])
+  }, [phase, pen, stops, reduceMotion, modelIndex, props.models, startDelay])
 
   const settled = reduceMotion || phase === 'idle'
   const reveal = phase === 'intro' && !reduceMotion ? pen : stops

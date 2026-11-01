@@ -16,6 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { useTranslation } from 'react-i18next'
+
 import { ConfigDrawer } from '@/components/config-drawer'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { NotificationPopover } from '@/components/notification-popover'
@@ -104,6 +106,7 @@ export function AppHeader({
   showConfigDrawer = true,
   showProfileDropdown = true,
 }: AppHeaderProps) {
+  const { t } = useTranslation()
   // Prioritize dynamically generated links from backend
   const dynamicLinks = useTopNavLinks()
   const links = dynamicLinks.length > 0 ? dynamicLinks : navLinks
@@ -112,9 +115,16 @@ export function AppHeader({
   const notifications = useNotifications()
 
   return (
-    <Header>
+    <Header className='pico-console-header'>
       <div className='@container/system-brand flex min-w-0 flex-1 items-center gap-1'>
         <SystemBrand variant='inline' />
+        <span
+          aria-hidden='true'
+          className='pico-header-divider hidden sm:block'
+        />
+        <span className='text-muted-foreground hidden shrink-0 font-mono text-[10px] tracking-[0.12em] uppercase sm:block'>
+          {t('Console')}
+        </span>
         <SystemUpdateAction presentation='version' />
       </div>
 

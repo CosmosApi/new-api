@@ -16,8 +16,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-// Brand home sections live apart from the upstream sections so upstream
-// changes to those files merge without conflicts.
 export { BrandCTA } from './brand-cta'
 export { BrandFeatures } from './brand-features'
 export { BrandHero } from './brand-hero'

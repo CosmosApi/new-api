@@ -19,6 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { PicoMark } from '@/components/brand/pico-mark'
 import { PublicLayout } from '@/components/layout'
 import { Footer } from '@/components/layout/components/footer'
 import { RichContent } from '@/components/rich-content'
@@ -34,6 +35,8 @@ import {
   BrandSteps,
 } from './components/brand'
 import { useHomePageContent } from './hooks'
+
+const BRAND_LOGO = <PicoMark className='size-full' />
 
 export function Home() {
   const { i18n, t } = useTranslation()
@@ -66,7 +69,11 @@ export function Home() {
 
   if (!isLoaded) {
     return (
-      <PublicLayout showMainContainer={false}>
+      <PublicLayout
+        showMainContainer={false}
+        logo={BRAND_LOGO}
+        siteName='PicoAPI'
+      >
         <main className='flex min-h-screen items-center justify-center'>
           <div className='text-muted-foreground'>{t('Loading...')}</div>
         </main>
@@ -77,7 +84,11 @@ export function Home() {
   if (content) {
     if (isUrl) {
       return (
-        <PublicLayout showMainContainer={false}>
+        <PublicLayout
+          showMainContainer={false}
+          logo={BRAND_LOGO}
+          siteName='PicoAPI'
+        >
           {/*
             allow-top-navigation-by-user-activation: the custom home page URL is
             admin-configured (trusted); this lets its target="_top" nav/menu links
@@ -102,7 +113,11 @@ export function Home() {
 
     if (contentIsHtml) {
       return (
-        <PublicLayout showMainContainer={false}>
+        <PublicLayout
+          showMainContainer={false}
+          logo={BRAND_LOGO}
+          siteName='PicoAPI'
+        >
           <RichContent
             mode='html'
             htmlVariant='isolated'
@@ -114,7 +129,7 @@ export function Home() {
     }
 
     return (
-      <PublicLayout>
+      <PublicLayout logo={BRAND_LOGO} siteName='PicoAPI'>
         <div className='mx-auto max-w-6xl px-4 py-8'>
           <RichContent
             mode='markdown'
@@ -127,7 +142,11 @@ export function Home() {
   }
 
   return (
-    <PublicLayout showMainContainer={false}>
+    <PublicLayout
+      showMainContainer={false}
+      logo={BRAND_LOGO}
+      siteName='PicoAPI'
+    >
       <BrandHero isAuthenticated={isAuthenticated} />
       <BrandProviders />
       <BrandFeatures />

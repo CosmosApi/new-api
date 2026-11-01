@@ -63,7 +63,7 @@ export function BrandSteps() {
   const lit = reduceMotion ? steps.length : reached
 
   return (
-    <section className='bg-muted/40 border-y px-6 py-24 md:py-32'>
+    <section className='brand-band border-y px-6 py-24 md:py-32'>
       <div className='mx-auto max-w-5xl'>
         <AnimateInView>
           <h2 className='font-serif text-3xl leading-tight font-medium tracking-tight md:text-4xl'>
