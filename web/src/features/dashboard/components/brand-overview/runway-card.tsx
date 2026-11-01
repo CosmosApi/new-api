@@ -40,6 +40,8 @@ const DOT_TONE: Record<Runway['state'], string> = {
 interface RunwayCardProps {
   balance: number
   runway: Runway
+  /** Hide the top-up link, e.g. on the wallet page that holds the form. */
+  hideTopUp?: boolean
   className?: string
 }
 
@@ -95,7 +97,7 @@ export function RunwayCard(props: RunwayCardProps) {
       <div
         role='img'
         aria-label={line}
-        className='grid grid-cols-[repeat(15,minmax(0,1fr))] gap-1.5'
+        className='grid max-w-80 grid-cols-[repeat(15,minmax(0,1fr))] gap-1.5'
       >
         {Array.from({ length: RUNWAY_DOTS }, (_, i) => (
           <span
@@ -113,14 +115,16 @@ export function RunwayCard(props: RunwayCardProps) {
         {(days ?? 0) > RUNWAY_DOTS &&
           ` ${t('Each dot is one day; showing the first 30.')}`}
       </p>
-      <Button
-        size='sm'
-        variant={state === 'ok' || state === 'idle' ? 'outline' : 'default'}
-        className='mt-auto self-start'
-        render={<Link to='/wallet' />}
-      >
-        {t('Top up')}
-      </Button>
+      {!props.hideTopUp && (
+        <Button
+          size='sm'
+          variant={state === 'ok' || state === 'idle' ? 'outline' : 'default'}
+          className='mt-auto self-start'
+          render={<Link to='/wallet' />}
+        >
+          {t('Top up')}
+        </Button>
+      )}
     </OverviewCard>
   )
 }

@@ -27,3 +27,19 @@ export function generateAffiliateLink(affCode: string): string {
   if (typeof window === 'undefined') return ''
   return `${window.location.origin}/sign-up?aff=${affCode}`
 }
+
+/**
+ * Whether the referral card is worth showing: payouts are allowed, or the
+ * account already has invites or rewards to look at. Otherwise it would only
+ * show a notice that the programme is unavailable.
+ */
+export function shouldShowAffiliateRewards(
+  complianceConfirmed: boolean,
+  user: { aff_count?: number; aff_history_quota?: number } | null
+): boolean {
+  return (
+    complianceConfirmed ||
+    (user?.aff_count ?? 0) > 0 ||
+    (user?.aff_history_quota ?? 0) > 0
+  )
+}

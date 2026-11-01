@@ -7451,6 +7451,20 @@
     "Calls are billed per token from your balance.": "Calls are billed per token from your balance.",
     "Send your first request": "Send your first request",
     "Use the command below, or point any OpenAI-compatible client at the base URL.": "Use the command below, or point any OpenAI-compatible client at the base URL.",
-    "Open Playground": "Open Playground"
+    "Open Playground": "Open Playground",
+    "Spent this month": "Spent this month",
+    "Last month": "Last month",
+    "All time": "All time",
+    "Spent so far this month.": "Spent so far this month.",
+    "At this pace the month ends near {{spend}}, {{percent}} more than last month.": "At this pace the month ends near {{spend}}, {{percent}} more than last month.",
+    "At this pace the month ends near {{spend}}, {{percent}} less than last month.": "At this pace the month ends near {{spend}}, {{percent}} less than last month.",
+    "At this pace the month ends near {{spend}}.": "At this pace the month ends near {{spend}}.",
+    "Monthly statement": "Monthly statement",
+    "Spend per calendar month. Open a month to see its calls.": "Spend per calendar month. Open a month to see its calls.",
+    "so far": "so far",
+    "Recent top-ups": "Recent top-ups",
+    "Order history": "Order history",
+    "No top-ups yet.": "No top-ups yet.",
+    "Paid {{money}}": "Paid {{money}}"
   }
 }

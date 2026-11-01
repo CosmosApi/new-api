@@ -7451,6 +7451,20 @@
     "Calls are billed per token from your balance.": "调用按 token 从余额中扣费。",
     "Send your first request": "发送第一个请求",
     "Use the command below, or point any OpenAI-compatible client at the base URL.": "用下面的命令试一下，或者把任意兼容 OpenAI 的客户端指向这个 API 地址。",
-    "Open Playground": "打开游乐场"
+    "Open Playground": "打开游乐场",
+    "Spent this month": "本月花费",
+    "Last month": "上个月",
+    "All time": "累计",
+    "Spent so far this month.": "本月到目前为止的花费。",
+    "At this pace the month ends near {{spend}}, {{percent}} more than last month.": "照这个速度，本月大约会花 {{spend}}，比上个月多 {{percent}}。",
+    "At this pace the month ends near {{spend}}, {{percent}} less than last month.": "照这个速度，本月大约会花 {{spend}}，比上个月少 {{percent}}。",
+    "At this pace the month ends near {{spend}}.": "照这个速度，本月大约会花 {{spend}}。",
+    "Monthly statement": "月度账单",
+    "Spend per calendar month. Open a month to see its calls.": "按自然月统计的花费，点开某个月可以查看当月的每一次调用。",
+    "so far": "截至目前",
+    "Recent top-ups": "最近充值",
+    "Order history": "订单历史",
+    "No top-ups yet.": "还没有充值记录。",
+    "Paid {{money}}": "实付 {{money}}"
   }
 }

@@ -7451,6 +7451,20 @@
     "Calls are billed per token from your balance.": "呼叫按 token 從餘額中扣費。",
     "Send your first request": "發送第一個請求",
     "Use the command below, or point any OpenAI-compatible client at the base URL.": "用下面的命令試一下，或者把任意相容 OpenAI 的用戶端指向這個 API 位址。",
-    "Open Playground": "開啟遊樂場"
+    "Open Playground": "開啟遊樂場",
+    "Spent this month": "本月花費",
+    "Last month": "上個月",
+    "All time": "累計",
+    "Spent so far this month.": "本月到目前為止的花費。",
+    "At this pace the month ends near {{spend}}, {{percent}} more than last month.": "照這個速度，本月大約會花 {{spend}}，比上個月多 {{percent}}。",
+    "At this pace the month ends near {{spend}}, {{percent}} less than last month.": "照這個速度，本月大約會花 {{spend}}，比上個月少 {{percent}}。",
+    "At this pace the month ends near {{spend}}.": "照這個速度，本月大約會花 {{spend}}。",
+    "Monthly statement": "月度帳單",
+    "Spend per calendar month. Open a month to see its calls.": "按自然月統計的花費，點開某個月可以查看當月的每一次呼叫。",
+    "so far": "截至目前",
+    "Recent top-ups": "最近儲值",
+    "Order history": "訂單歷史",
+    "No top-ups yet.": "還沒有儲值紀錄。",
+    "Paid {{money}}": "實付 {{money}}"
   }
 }
