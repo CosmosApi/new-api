@@ -1,0 +1,111 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+/* PicoAPI brand motion. The dot motif ("pico": tiny, precise) runs through
+ * the home page: a canvas dot field (dot-field.tsx), flowing route lines,
+ * the slogan pen and a provider marquee. Every animation stops under
+ * prefers-reduced-motion. */
+
+/* ── Spotlight card ── */
+.brand-spotlight {
+  background: radial-gradient(
+    360px circle at var(--spot-x, 50%) var(--spot-y, 0%),
+    color-mix(in oklch, var(--primary) 10%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.group\/spot:hover .brand-spotlight {
+  opacity: 1;
+}
+
+/* ── Provider marquee ── */
+.brand-marquee {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 12%,
+    black 88%,
+    transparent
+  );
+}
+.brand-marquee-track {
+  animation: brand-marquee 40s linear infinite;
+}
+.brand-marquee:hover .brand-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes brand-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Route lines ── */
+.brand-flow {
+  stroke-dasharray: 3 7;
+  animation: brand-flow 1.2s linear infinite;
+}
+@keyframes brand-flow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+/* ── Hub pulse ── */
+.brand-pulse {
+  animation: brand-pulse 2.8s ease-out infinite;
+}
+@keyframes brand-pulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+}
+
+/* ── Slogan dot landing ── */
+.brand-ripple {
+  animation: brand-ripple 0.9s ease-out 0.15s both;
+}
+@keyframes brand-ripple {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee-track,
+  .brand-flow,
+  .brand-pulse,
+  .brand-ripple {
+    animation: none;
+  }
+  .brand-spotlight {
+    transition: none;
+  }
+}
