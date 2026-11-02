@@ -53,6 +53,8 @@ const ORBIT_TILT = 0.5
 const STAR_SIZE = 132
 // Angular speed of the outer orbit in rad/s; inner orbits run faster.
 const BASE_SPEED = 0.2
+// How far behind each planet its comet trail reaches, in degrees of its ring.
+const TRAIL_DEG = 26
 
 // Vertical centre (percent of the stage) of row i out of n.
 function rowPosition(i: number, n: number): number {
@@ -82,7 +84,9 @@ function ModelChip(props: ModelChipProps) {
       aria-pressed={props.active}
       onClick={props.onPick}
       className={cn(
-        'bg-background aria-pressed:border-primary aria-pressed:bg-primary/10 h-9 gap-2 rounded-xl px-3 aria-pressed:shadow-[0_0_24px_-4px_rgba(248,118,43,0.6)]',
+        // A paper chip rather than a glass disc: it needs its own surface so
+        // it reads as an object sitting on the page, not a label stuck to it.
+        'bg-card border-border/70 hover:bg-card aria-pressed:border-primary aria-pressed:bg-primary/8 h-9 gap-2 rounded-full px-3 shadow-[0_1px_2px_rgba(20,26,48,0.05)] transition-[box-shadow,border-color,background-color] duration-300 aria-pressed:shadow-[0_0_0_3px_color-mix(in_oklch,var(--primary)_16%,transparent),0_2px_10px_-2px_color-mix(in_oklch,var(--primary)_45%,transparent)]',
         props.className
       )}
     >
@@ -110,7 +114,9 @@ export function PicoRouter() {
   const [size, setSize] = useState({ w: 0, h: 0 })
   const stageRef = useRef<HTMLDivElement>(null)
   const planetRefs = useRef<(HTMLLIElement | null)[]>([])
+  const orbitRefs = useRef<(SVGEllipseElement | null)[]>([])
   const beamRef = useRef<SVGLineElement>(null)
+  const beamDotRef = useRef<SVGCircleElement>(null)
   const activeRef = useRef(active)
   const pausedRef = useRef(paused)
   // Spread the planets out so they don't start in a line.
@@ -150,7 +156,7 @@ export function PicoRouter() {
   useLayoutEffect(() => {
     if (size.w === 0) return
     const { cx, cy, rx, ry } = orbitGeometry(size.w, size.h)
-    const place = () => {
+    const place = (now: number) => {
       const angles = anglesRef.current
       for (let i = 0; i < MODELS.length; i++) {
         const el = planetRefs.current[i]
@@ -163,13 +169,30 @@ export function PicoRouter() {
         el.style.transform = `translate(${px}px, ${py}px) translate(-50%, -50%) scale(${0.88 + near * 0.14})`
         el.style.zIndex = near > 0.5 ? '30' : '10'
         el.style.opacity = String(0.72 + near * 0.28)
+        // The trail is the ring's own dash, running from the planet backwards.
+        const trail = orbitRefs.current[i]
+        if (trail) {
+          trail.setAttribute(
+            'stroke-dashoffset',
+            String(TRAIL_DEG - (angles[i] * 180) / Math.PI)
+          )
+        }
         if (i === activeRef.current) {
           beamRef.current?.setAttribute('x2', String(px))
           beamRef.current?.setAttribute('y2', String(py))
+          // The request travels the beam, restarting every 1.4s.
+          const dot = beamDotRef.current
+          if (dot) {
+            const k = ((now % 1400) / 1400) ** 0.85
+            const start = STAR_SIZE / 2 / Math.hypot(px - cx, py - cy || 1)
+            dot.setAttribute('cx', String(cx + (px - cx) * (start + (1 - start) * k)))
+            dot.setAttribute('cy', String(cy + (py - cy) * (start + (1 - start) * k)))
+            dot.setAttribute('opacity', String(Math.sin(k * Math.PI) * 0.95))
+          }
         }
       }
     }
-    place()
+    place(performance.now())
     if (reduceMotion) return
 
     let raf = 0
@@ -186,7 +209,7 @@ export function PicoRouter() {
       for (let i = 0; i < MODELS.length; i++) {
         angles[i] += dt * BASE_SPEED * Math.pow(ORBITS[i], -0.8) * speed
       }
-      place()
+      place(now)
       if (visible) raf = requestAnimationFrame(loop)
     }
     const io = new IntersectionObserver(([entry]) => {
@@ -257,6 +280,8 @@ export function PicoRouter() {
                   />
                 )
               })}
+              {/* The thin ink rings the whole system turns inside. Only the
+                  routed one is solid; the rest are dotted guides. */}
               {ORBITS.map((f, i) => (
                 <ellipse
                   key={MODELS[i].name}
@@ -265,12 +290,38 @@ export function PicoRouter() {
                   rx={geo.rx * f}
                   ry={geo.ry * f}
                   fill='none'
-                  strokeDasharray={i === active ? undefined : '2 6'}
+                  strokeDasharray={i === active ? undefined : '1.5 5'}
+                  strokeLinecap='round'
                   className={cn(
-                    'transition-colors duration-500',
-                    i === active ? 'stroke-primary/55' : 'stroke-foreground/15'
+                    'transition-[stroke] duration-700',
+                    i === active
+                      ? 'stroke-foreground/28'
+                      : 'stroke-foreground/12'
                   )}
-                  strokeWidth={i === active ? 1.5 : 1}
+                  strokeWidth={1}
+                />
+              ))}
+              {/* A comet trail behind each planet: an arc of the same ring,
+                  one dash long, whose offset follows the planet's angle. */}
+              {ORBITS.map((f, i) => (
+                <ellipse
+                  key={`trail-${MODELS[i].name}`}
+                  ref={(el) => {
+                    orbitRefs.current[i] = el
+                  }}
+                  cx={geo.cx}
+                  cy={geo.cy}
+                  rx={geo.rx * f}
+                  ry={geo.ry * f}
+                  fill='none'
+                  pathLength={360}
+                  strokeDasharray={`${TRAIL_DEG} ${360 - TRAIL_DEG}`}
+                  strokeLinecap='round'
+                  className={
+                    i === active ? 'stroke-primary' : 'stroke-foreground/25'
+                  }
+                  strokeWidth={i === active ? 1.75 : 1}
+                  opacity={i === active ? 0.8 : 0.4}
                 />
               ))}
               <line
@@ -279,8 +330,16 @@ export function PicoRouter() {
                 y1={geo.cy}
                 x2={geo.cx}
                 y2={geo.cy}
-                className='brand-flow stroke-primary'
-                strokeWidth={2}
+                className='brand-flow stroke-primary/70'
+                strokeWidth={1.5}
+              />
+              {/* The request itself, riding the beam. */}
+              <circle
+                ref={beamDotRef}
+                r={3}
+                className='fill-primary'
+                cx={geo.cx}
+                cy={geo.cy}
               />
             </svg>
 
@@ -291,7 +350,7 @@ export function PicoRouter() {
               {APPS.map((app, i) => (
                 <li
                   key={app.name}
-                  className='bg-background absolute right-0 flex -translate-y-1/2 items-center gap-2 rounded-xl border px-3 py-2 text-sm shadow-xs'
+                  className='bg-card border-border/70 absolute right-0 flex -translate-y-1/2 items-center gap-2 rounded-full border px-3 py-2 text-sm shadow-[0_1px_2px_rgba(20,26,48,0.05)]'
                   style={{ top: `${rowPosition(i, APPS.length)}%` }}
                 >
                   <span aria-hidden className='flex size-4 items-center'>
@@ -312,17 +371,31 @@ export function PicoRouter() {
                 height: STAR_SIZE,
               }}
             >
+              {/* Corona: a warm bloom in the dark, a drawn halo in the light
+                  (a big orange glow on cream reads as a smudge, not heat). */}
               <span
                 aria-hidden
-                className='absolute -inset-16 rounded-full bg-[radial-gradient(circle,color-mix(in_oklch,var(--primary)_28%,transparent),transparent_65%)]'
+                className='absolute -inset-14 hidden rounded-full bg-[radial-gradient(circle,color-mix(in_oklch,var(--primary)_30%,transparent),transparent_65%)] dark:block'
+              />
+              <span
+                aria-hidden
+                className='border-border/60 absolute -inset-6 rounded-full border'
+              />
+              <span
+                aria-hidden
+                className='border-border/35 absolute -inset-11 rounded-full border'
               />
               <span
                 aria-hidden
                 className='brand-pulse border-primary/50 absolute inset-0 rounded-full border'
               />
-              <div className='bg-background relative flex size-full flex-col items-center justify-center rounded-full border px-3 text-center shadow-[0_0_50px_-8px_rgba(248,118,43,0.55)]'>
-                <PicoMark className='h-7' />
-                <p className='mt-1.5 font-serif text-base leading-none font-medium'>
+              <div className='bg-card relative flex size-full flex-col items-center justify-center rounded-full border px-3 text-center shadow-[0_2px_20px_-6px_rgba(20,26,48,0.14)] dark:shadow-[0_0_50px_-8px_rgba(248,118,43,0.55)]'>
+                <span
+                  aria-hidden
+                  className='from-primary/12 pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b to-transparent'
+                />
+                <PicoMark className='relative h-7' />
+                <p className='relative mt-1.5 font-serif text-base leading-none font-medium'>
                   {brandName}
                 </p>
                 {routingText}
@@ -342,7 +415,7 @@ export function PicoRouter() {
                     model={m}
                     active={i === active}
                     onPick={() => pick(i)}
-                    className='rounded-full backdrop-blur-sm'
+                    className='backdrop-blur-sm'
                   />
                 </li>
               ))}
@@ -358,7 +431,7 @@ export function PicoRouter() {
             aria-hidden
             className='brand-pulse border-primary/50 absolute inset-0 rounded-2xl border'
           />
-          <div className='bg-background relative rounded-2xl border px-4 py-5 text-center shadow-sm'>
+          <div className='bg-card relative rounded-2xl border px-4 py-5 text-center shadow-[0_2px_20px_-6px_rgba(20,26,48,0.14)]'>
             <PicoMark className='mx-auto h-8' />
             <p className='mt-2 font-serif text-lg font-medium'>{brandName}</p>
             {routingText}

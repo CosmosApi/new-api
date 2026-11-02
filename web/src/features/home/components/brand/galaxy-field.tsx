@@ -28,14 +28,58 @@ const PATTERN_SPEED = 0.05
 const RIPPLE_SPEED = 0.55
 const RIPPLE_WIDTH = 0.08
 
-// Clay outer arms → cream → white core, plus a few hot sparkles.
-const BUCKET_COLORS = [
-  [232, 120, 64],
-  [255, 196, 150],
-  [255, 238, 218],
-  [255, 255, 255],
-] as const
-const BUCKET_ALPHA = [0.55, 0.65, 0.8, 1]
+interface Palette {
+  /** One colour per band, outer arms → core, then the sparkles. */
+  buckets: readonly (readonly [number, number, number])[]
+  /** Per-band opacity, same order. */
+  alpha: readonly number[]
+  /** Core glow, from the centre outwards: colour, then opacity. */
+  core: readonly (readonly [string, number])[]
+  /** Radius of that glow, as a share of the disc radius. */
+  coreSize: number
+  blend: GlobalCompositeOperation
+  /** Dot size of the sparkles. */
+  sparkle: number
+}
+
+// Dark theme: a deep-space disc — clay arms burning out to a white core.
+const DARK_GALAXY: Palette = {
+  buckets: [
+    [232, 120, 64],
+    [255, 196, 150],
+    [255, 238, 218],
+    [255, 255, 255],
+  ],
+  alpha: [0.55, 0.65, 0.8, 1],
+  core: [
+    ['255, 214, 170', 0.5],
+    ['248, 118, 43', 0.2],
+  ],
+  coreSize: 0.32,
+  blend: 'lighter',
+  sparkle: 1.9,
+}
+// Light theme: the same disc printed as a star chart — ink dots on paper.
+// Additive blending would wash out on cream, and the mass has to come from
+// the dots themselves, so the bands run darker and denser than the dark
+// theme's. The core stays small: a wide warm haze behind the copy reads as a
+// stain rather than a glow.
+const LIGHT_GALAXY: Palette = {
+  buckets: [
+    [84, 96, 124],
+    [44, 55, 84],
+    [20, 26, 48],
+    [186, 78, 40],
+  ],
+  alpha: [0.85, 0.9, 0.95, 1],
+  core: [
+    ['246, 232, 210', 0.65],
+    ['206, 132, 82', 0.12],
+  ],
+  coreSize: 0.18,
+  blend: 'source-over',
+  sparkle: 1.6,
+}
 
 interface GalaxyFieldProps {
   className?: string
@@ -148,16 +192,29 @@ export function GalaxyField(props: GalaxyFieldProps) {
       const cosR = Math.cos(ROLL)
       const sinR = Math.sin(ROLL)
       const boost = 1 + hover * 0.35
+      const pal = document.documentElement.classList.contains('dark')
+        ? DARK_GALAXY
+        : LIGHT_GALAXY
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, width, height)
-      ctx.globalCompositeOperation = 'lighter'
+      ctx.globalCompositeOperation = pal.blend
 
       // Core haze.
-      const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.32)
-      core.addColorStop(0, `rgba(255, 214, 170, ${0.5 * boost})`)
-      core.addColorStop(0.4, `rgba(248, 118, 43, ${0.2 * boost})`)
-      core.addColorStop(1, 'rgba(248, 118, 43, 0)')
+      const core = ctx.createRadialGradient(
+        cx,
+        cy,
+        0,
+        cx,
+        cy,
+        radius * pal.coreSize
+      )
+      core.addColorStop(0, `rgba(${pal.core[0][0]}, ${pal.core[0][1] * boost})`)
+      core.addColorStop(
+        0.4,
+        `rgba(${pal.core[1][0]}, ${pal.core[1][1] * boost})`
+      )
+      core.addColorStop(1, `rgba(${pal.core[1][0]}, 0)`)
       ctx.save()
       ctx.translate(cx, cy)
       ctx.rotate(ROLL)
@@ -167,11 +224,11 @@ export function GalaxyField(props: GalaxyFieldProps) {
       ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2)
       ctx.restore()
 
-      for (let b = 0; b < BUCKET_COLORS.length; b++) {
-        const [cr, cg, cb] = BUCKET_COLORS[b]
+      for (let b = 0; b < pal.buckets.length; b++) {
+        const [cr, cg, cb] = pal.buckets[b]
         ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`
-        const baseAlpha = BUCKET_ALPHA[b]
-        const baseSize = b === 3 ? 1.9 : 1.15
+        const baseAlpha = pal.alpha[b]
+        const baseSize = b === 3 ? pal.sparkle : 1.15
         for (let i = 0; i < count; i++) {
           if (bucket[i] !== b) continue
           const rr = r[i]
