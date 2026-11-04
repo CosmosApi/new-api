@@ -6076,6 +6076,8 @@
     "Switch to JSON": "Переключиться на JSON",
     "Switch to Visual": "Переключиться на визуальный режим",
     "Switch to visual editor": "Перейти к визуальному редактору",
+    "Switch to light theme": "Переключить на светлую тему",
+    "Switch to dark theme": "Переключить на тёмную тему",
     "Switch to visual mode to add rules or apply templates.": "Перейдите в визуальный режим, чтобы добавить правила или применить шаблоны.",
     "Switch to visual pricing?": "Перейти к визуальной настройке цен?",
     "Switching regenerates the expression from the price table and replaces its original formatting and tier names. Changes apply only after saving.": "При переключении выражение будет создано заново из таблицы цен. Исходное форматирование и названия уровней будут заменены. Изменения вступят в силу после сохранения.",
@@ -7533,6 +7535,17 @@
     "Compare model pricing": "Сравнить цены моделей",
     "Your API workspace": "Ваше рабочее пространство API",
     "Balance, traffic, and service health, together.": "Баланс, запросы и состояние сервиса в одном месте.",
-    "Click anywhere in the galaxy": "Щёлкните в любом месте галактики"
+    "Click anywhere in the galaxy": "Щёлкните в любом месте галактики",
+    "Guardrails you can check for yourself": "Гарантии, которые можно проверить самому",
+    "Nothing here asks for blind trust. Every key, call and charge leaves a record you can read.": "Здесь ничего не нужно принимать на веру: каждый ключ, каждый вызов и каждое списание оставляют запись, которую можно прочитать.",
+    "Keys": "Ключи",
+    "Scoped keys, instant revoke": "Ключи с ограничениями, мгновенный отзыв",
+    "Give each key its own quota, expiry, model list and allowed IPs. Revoke it and the next request is refused.": "У каждого ключа свои лимит, срок действия, список моделей и разрешённые IP. После отзыва следующий запрос будет отклонён.",
+    "Records": "Записи",
+    "The receipt, not the conversation": "Квитанция, а не переписка",
+    "Usage logs keep the model, tokens and cost of each call. Prompts and replies are forwarded to the provider, not stored.": "Журнал использования хранит модель, токены и стоимость каждого вызова. Запросы и ответы передаются провайдеру и не сохраняются.",
+    "One wallet, one owner": "Один кошелёк — один владелец",
+    "Every key draws only from its own account's balance, so one team's usage never touches another's.": "Каждый ключ расходует только баланс своего аккаунта, поэтому использование одной команды никогда не затрагивает средства другой.",
+    "Official APIs only — no reseller keys, no swapped models.": "Только официальные API — без перепродажи ключей и подмены моделей."
   }
 }

@@ -6076,6 +6076,8 @@
     "Switch to JSON": "Passer à JSON",
     "Switch to Visual": "Passer à l'affichage visuel",
     "Switch to visual editor": "Passer à l’éditeur visuel",
+    "Switch to light theme": "Passer au thème clair",
+    "Switch to dark theme": "Passer au thème sombre",
     "Switch to visual mode to add rules or apply templates.": "Passez en mode visuel pour ajouter des règles ou appliquer des modèles.",
     "Switch to visual pricing?": "Passer à la tarification visuelle ?",
     "Switching regenerates the expression from the price table and replaces its original formatting and tier names. Changes apply only after saving.": "L’expression sera régénérée à partir du tableau des prix. Sa mise en forme et les noms des paliers seront remplacés. Les modifications prendront effet après enregistrement.",
@@ -7533,6 +7535,17 @@
     "Compare model pricing": "Comparer les tarifs des modèles",
     "Your API workspace": "Votre espace API",
     "Balance, traffic, and service health, together.": "Solde, trafic et état du service, au même endroit.",
-    "Click anywhere in the galaxy": "Cliquez n’importe où dans la galaxie"
+    "Click anywhere in the galaxy": "Cliquez n’importe où dans la galaxie",
+    "Guardrails you can check for yourself": "Des garde-fous que vous pouvez vérifier vous-même",
+    "Nothing here asks for blind trust. Every key, call and charge leaves a record you can read.": "Rien ici ne demande une confiance aveugle : chaque clé, chaque appel et chaque débit laisse une trace que vous pouvez consulter.",
+    "Keys": "Clés",
+    "Scoped keys, instant revoke": "Clés à portée limitée, révocation immédiate",
+    "Give each key its own quota, expiry, model list and allowed IPs. Revoke it and the next request is refused.": "Chaque clé a son propre quota, sa date d’expiration, sa liste de modèles et ses IP autorisées. Une fois révoquée, la requête suivante est refusée.",
+    "Records": "Historique",
+    "The receipt, not the conversation": "Le reçu, pas la conversation",
+    "Usage logs keep the model, tokens and cost of each call. Prompts and replies are forwarded to the provider, not stored.": "Les journaux d’usage conservent le modèle, les tokens et le coût de chaque appel. Les prompts et les réponses sont transmis au fournisseur, sans être stockés.",
+    "One wallet, one owner": "Un portefeuille, un propriétaire",
+    "Every key draws only from its own account's balance, so one team's usage never touches another's.": "Chaque clé ne puise que dans le solde de son propre compte : l’usage d’une équipe ne touche jamais celui d’une autre.",
+    "Official APIs only — no reseller keys, no swapped models.": "API officielles uniquement — pas de clés revendeur, pas de modèles substitués."
   }
 }

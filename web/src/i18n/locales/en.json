@@ -6076,6 +6076,8 @@
     "Switch to JSON": "Switch to JSON",
     "Switch to Visual": "Switch to Visual",
     "Switch to visual editor": "Switch to visual editor",
+    "Switch to light theme": "Switch to light theme",
+    "Switch to dark theme": "Switch to dark theme",
     "Switch to visual mode to add rules or apply templates.": "Switch to visual mode to add rules or apply templates.",
     "Switch to visual pricing?": "Switch to visual pricing?",
     "Switching regenerates the expression from the price table and replaces its original formatting and tier names. Changes apply only after saving.": "Switching regenerates the expression from the price table and replaces its original formatting and tier names. Changes apply only after saving.",
@@ -7533,6 +7535,17 @@
     "Compare model pricing": "Compare model pricing",
     "Your API workspace": "Your API workspace",
     "Balance, traffic, and service health, together.": "Balance, traffic, and service health, together.",
-    "Click anywhere in the galaxy": "Click anywhere in the galaxy"
+    "Click anywhere in the galaxy": "Click anywhere in the galaxy",
+    "Guardrails you can check for yourself": "Guardrails you can check for yourself",
+    "Nothing here asks for blind trust. Every key, call and charge leaves a record you can read.": "Nothing here asks for blind trust. Every key, call and charge leaves a record you can read.",
+    "Keys": "Keys",
+    "Scoped keys, instant revoke": "Scoped keys, instant revoke",
+    "Give each key its own quota, expiry, model list and allowed IPs. Revoke it and the next request is refused.": "Give each key its own quota, expiry, model list and allowed IPs. Revoke it and the next request is refused.",
+    "Records": "Records",
+    "The receipt, not the conversation": "The receipt, not the conversation",
+    "Usage logs keep the model, tokens and cost of each call. Prompts and replies are forwarded to the provider, not stored.": "Usage logs keep the model, tokens and cost of each call. Prompts and replies are forwarded to the provider, not stored.",
+    "One wallet, one owner": "One wallet, one owner",
+    "Every key draws only from its own account's balance, so one team's usage never touches another's.": "Every key draws only from its own account's balance, so one team's usage never touches another's.",
+    "Official APIs only — no reseller keys, no swapped models.": "Official APIs only — no reseller keys, no swapped models."
   }
 }

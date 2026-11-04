@@ -202,16 +202,21 @@ export function PublicHeader(props: PublicHeaderProps) {
       <header className='pico-public-header pointer-events-none fixed inset-x-0 top-0 z-50'>
         <div
           className={cn(
-            'pointer-events-auto mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
-            scrolled ? 'max-w-[52rem] px-3 pt-3' : 'max-w-7xl px-4 pt-0 md:px-6'
+            // The island narrows as the page scrolls: the same capsule, drawn
+            // tighter, rather than a different shape replacing it.
+            'pointer-events-auto mx-auto transition-[max-width,padding] duration-[620ms] ease-[cubic-bezier(0.34,1.24,0.5,1)]',
+            scrolled
+              ? 'max-w-[52rem] px-3 pt-3'
+              : 'max-w-6xl px-3 pt-3 md:px-6 md:pt-5'
           )}
         >
           <nav
+            data-scrolled={scrolled}
             className={cn(
-              'pico-public-nav flex items-center justify-between gap-2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+              'pico-public-nav flex items-center justify-between gap-2 transition-[height,padding,border-radius] duration-[620ms] ease-[cubic-bezier(0.34,1.24,0.5,1)]',
               scrolled
-                ? 'bg-background/60 ring-border/50 h-12 rounded-2xl pr-1.5 pl-4 shadow-[0_2px_16px_-6px_rgba(0,0,0,0.08),0_0_0_0.5px_rgba(0,0,0,0.02)] ring-[0.5px] backdrop-blur-2xl dark:shadow-[0_2px_16px_-6px_rgba(0,0,0,0.4)]'
-                : 'h-16 px-2'
+                ? 'h-12 rounded-full pr-1.5 pl-3'
+                : 'h-14 rounded-full pr-2 pl-3 md:h-[3.75rem] md:pl-4'
             )}
           >
             {/* Logo */}

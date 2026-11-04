@@ -32,6 +32,7 @@ import {
   BrandFeatures,
   BrandHero,
   BrandProviders,
+  BrandSecurity,
   BrandSteps,
 } from './components/brand'
 import { useHomePageContent } from './hooks'
@@ -151,6 +152,7 @@ export function Home() {
       <BrandProviders />
       <BrandFeatures />
       <BrandSteps />
+      <BrandSecurity />
       <BrandCTA isAuthenticated={isAuthenticated} />
       <Footer />
     </PublicLayout>

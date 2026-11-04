@@ -6076,6 +6076,8 @@
     "Switch to JSON": "Chuyển sang JSON",
     "Switch to Visual": "Chuyển sang Trực quan",
     "Switch to visual editor": "Chuyển sang trình sửa trực quan",
+    "Switch to light theme": "Chuyển sang giao diện sáng",
+    "Switch to dark theme": "Chuyển sang giao diện tối",
     "Switch to visual mode to add rules or apply templates.": "Chuyển sang chế độ trực quan để thêm quy tắc hoặc áp dụng mẫu.",
     "Switch to visual pricing?": "Chuyển sang định giá trực quan?",
     "Switching regenerates the expression from the price table and replaces its original formatting and tier names. Changes apply only after saving.": "Khi chuyển, biểu thức sẽ được tạo lại từ bảng giá, thay thế định dạng và tên bậc ban đầu. Thay đổi chỉ có hiệu lực sau khi lưu.",
@@ -7533,6 +7535,17 @@
     "Compare model pricing": "So sánh giá mô hình",
     "Your API workspace": "Không gian API của bạn",
     "Balance, traffic, and service health, together.": "Số dư, lưu lượng và trạng thái dịch vụ trong một nơi.",
-    "Click anywhere in the galaxy": "Nhấp vào bất kỳ đâu trong thiên hà"
+    "Click anywhere in the galaxy": "Nhấp vào bất kỳ đâu trong thiên hà",
+    "Guardrails you can check for yourself": "Những chốt chặn bạn tự kiểm chứng được",
+    "Nothing here asks for blind trust. Every key, call and charge leaves a record you can read.": "Ở đây không có gì buộc bạn phải tin suông: mỗi khóa, mỗi lượt gọi và mỗi khoản trừ đều để lại bản ghi bạn có thể đọc.",
+    "Keys": "Khóa",
+    "Scoped keys, instant revoke": "Khóa giới hạn quyền, thu hồi tức thì",
+    "Give each key its own quota, expiry, model list and allowed IPs. Revoke it and the next request is refused.": "Mỗi khóa có hạn mức, thời hạn, danh sách mô hình và dải IP riêng. Thu hồi khóa là yêu cầu kế tiếp bị từ chối.",
+    "Records": "Bản ghi",
+    "The receipt, not the conversation": "Giữ hóa đơn, không giữ cuộc trò chuyện",
+    "Usage logs keep the model, tokens and cost of each call. Prompts and replies are forwarded to the provider, not stored.": "Nhật ký sử dụng lưu mô hình, token và chi phí của từng lượt gọi. Câu lệnh và phản hồi chỉ được chuyển tiếp tới nhà cung cấp, không bị lưu lại.",
+    "One wallet, one owner": "Một ví, một chủ",
+    "Every key draws only from its own account's balance, so one team's usage never touches another's.": "Mỗi khóa chỉ trừ vào số dư của tài khoản sở hữu, nên mức dùng của một nhóm không bao giờ đụng tới hạn mức của nhóm khác.",
+    "Official APIs only — no reseller keys, no swapped models.": "Chỉ API chính thức — không khóa bán lại, không tráo mô hình."
   }
 }

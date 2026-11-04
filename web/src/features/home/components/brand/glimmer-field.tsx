@@ -38,25 +38,33 @@ const WAVE_WIDTH = 70
 const PRESS_BOOST = 6
 
 interface Palette {
-  ink: readonly [number, number, number]
-  accent: readonly [number, number, number]
+  /** Pre-built fill strings: the loop touches up to 1,600 particles a frame,
+   *  and formatting a colour per particle is a measurable cost. */
+  inkCss: string
+  accentCss: string
   alpha: number
   blend: GlobalCompositeOperation
 }
 
 // Light theme: navy ink glints on the cream page. Dark theme: cream light.
 const LIGHT: Palette = {
-  ink: [20, 26, 48],
-  accent: [232, 110, 48],
+  inkCss: 'rgb(20, 26, 48)',
+  accentCss: 'rgb(232, 110, 48)',
   alpha: 0.55,
   blend: 'source-over',
 }
 const DARK: Palette = {
-  ink: [242, 236, 226],
-  accent: [255, 154, 92],
+  inkCss: 'rgb(242, 236, 226)',
+  accentCss: 'rgb(255, 154, 92)',
   alpha: 1,
   blend: 'lighter',
 }
+
+// Backing-store budget for the canvas. A full-bleed hero at 2× DPR on a 4K
+// screen asks the compositor for ~10 MP every frame, which is where this
+// field starts to drop frames; the glints are blurred enough that rendering
+// below the device ratio is invisible.
+const MAX_PIXELS = 2_400_000
 
 interface Wave {
   x: number
@@ -99,7 +107,7 @@ export function GlimmerField(props: GlimmerFieldProps) {
     const reduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    let dpr = 1
     let width = 0
     let height = 0
     let cx = 0
@@ -153,6 +161,12 @@ export function GlimmerField(props: GlimmerFieldProps) {
       if (rect.width === 0 || rect.height === 0) return
       width = rect.width
       height = rect.height
+      // Step the device ratio down on large screens so a frame stays inside
+      // the pixel budget.
+      dpr = Math.min(
+        Math.min(window.devicePixelRatio || 1, 2),
+        Math.max(1, Math.sqrt(MAX_PIXELS / (width * height)))
+      )
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       scale = Math.max(width, height) * 0.5
@@ -175,13 +189,6 @@ export function GlimmerField(props: GlimmerFieldProps) {
       if (reduced || !raf) draw(performance.now(), 0)
     }
 
-    const project = (x: number, y: number, z: number) => {
-      // Near glints lean further toward the pointer than far ones.
-      const px = cx + ((x + lean.x * (1 - z)) / z) * scale * 0.18
-      const py = cy + ((y + lean.y * (1 - z)) / z) * scale * 0.18
-      return [px, py] as const
-    }
-
     const sparkle = (x: number, y: number, len: number) => {
       const w = len * 0.16
       ctx.beginPath()
@@ -198,8 +205,9 @@ export function GlimmerField(props: GlimmerFieldProps) {
     }
 
     const draw = (now: number, dz: number) => {
-      const dark = document.documentElement.classList.contains('dark')
-      const pal = dark ? DARK : LIGHT
+      const pal = document.documentElement.classList.contains('dark')
+        ? DARK
+        : LIGHT
       const t = now / 1000
       const fadeIn = reduced ? 1 : Math.min(1, (now - born) / 500)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -207,9 +215,23 @@ export function GlimmerField(props: GlimmerFieldProps) {
       ctx.globalCompositeOperation = pal.blend
       ctx.lineCap = 'round'
 
+      // Hoisted out of the particle loop: the lean is constant for the whole
+      // field, and a projection helper returning tuples allocated thousands
+      // of arrays every frame.
+      const leanX = lean.x
+      const leanY = lean.y
+      const focal = scale * 0.18
+      const streak = dz * TRAIL * 60
+      const hasStreak = streak > 0.002
+      const hasWaves = waves.length > 0
+      // Last bucket written to the context, so colours are set per run
+      // rather than per particle.
+      let painted = -1
+
       for (let i = 0; i < n; i++) {
         const z = sz[i]
-        const [px, py] = project(sx[i], sy[i], z)
+        const px = cx + ((sx[i] + leanX * (1 - z)) / z) * focal
+        const py = cy + ((sy[i] + leanY * (1 - z)) / z) * focal
         if (px < -40 || px > width + 40 || py < -40 || py > height + 40) {
           continue
         }
@@ -219,38 +241,57 @@ export function GlimmerField(props: GlimmerFieldProps) {
         let a = Math.min(1, near * 1.6) * (1 - blur * 0.55) * pal.alpha * fadeIn
         if (!reduced) a *= 0.72 + 0.28 * Math.sin(t * 2.3 + seed[i] * 5)
         let lift = 0
-        for (const w of waves) {
-          const ring = ((now - w.start) / 1000) * WAVE_SPEED
-          const d = Math.hypot(px - w.x, py - w.y)
-          const band = Math.abs(d - ring) / WAVE_WIDTH
-          if (band < 1) {
-            lift = Math.max(lift, 1 - band)
-            if (flash[i] <= 0 && Math.random() < 0.08) flash[i] = 1
+        if (hasWaves) {
+          for (const w of waves) {
+            const ring = ((now - w.start) / 1000) * WAVE_SPEED
+            const dx = px - w.x
+            const dy = py - w.y
+            const d = Math.sqrt(dx * dx + dy * dy)
+            const band = Math.abs(d - ring) / WAVE_WIDTH
+            if (band < 1) {
+              lift = Math.max(lift, 1 - band)
+              if (flash[i] <= 0 && Math.random() < 0.08) flash[i] = 1
+            }
           }
         }
         a = Math.min(1, a + lift * 0.7)
-        const c = accent[i] ? pal.accent : pal.ink
+        if (a < 0.02) continue
+
+        const isAccent = accent[i]
+        if (isAccent !== painted) {
+          painted = isAccent
+          const css = isAccent ? pal.accentCss : pal.inkCss
+          ctx.fillStyle = css
+          ctx.strokeStyle = css
+        }
         const size =
           Math.min(MAX_SIZE, 0.7 + near * near * 3.2) * (1 + blur * 0.9)
         ctx.globalAlpha = a
-        ctx.fillStyle = `rgb(${c[0]}, ${c[1]}, ${c[2]})`
 
-        // Motion streak back along the line of travel.
-        const streak = dz * TRAIL * 60
-        if (streak > 0.002) {
-          const [qx, qy] = project(sx[i], sy[i], Math.min(Z_FAR, z + streak))
-          ctx.strokeStyle = ctx.fillStyle
-          ctx.lineWidth = Math.max(0.6, size * 0.7)
-          ctx.beginPath()
-          ctx.moveTo(qx, qy)
-          ctx.lineTo(px, py)
-          ctx.stroke()
-        } else if (size < 1.8) {
-          ctx.fillRect(px - size / 2, py - size / 2, size, size)
-        } else {
-          ctx.beginPath()
-          ctx.arc(px, py, size / 2, 0, Math.PI * 2)
-          ctx.fill()
+        // Motion streak back along the line of travel. Far glints project
+        // their trail into less than a pixel; those are drawn as dots.
+        let trail = false
+        if (hasStreak) {
+          const qz = Math.min(Z_FAR, z + streak)
+          const qx = cx + ((sx[i] + leanX * (1 - qz)) / qz) * focal
+          const qy = cy + ((sy[i] + leanY * (1 - qz)) / qz) * focal
+          if (Math.abs(qx - px) + Math.abs(qy - py) > 1.2) {
+            ctx.lineWidth = Math.max(0.6, size * 0.7)
+            ctx.beginPath()
+            ctx.moveTo(qx, qy)
+            ctx.lineTo(px, py)
+            ctx.stroke()
+            trail = true
+          }
+        }
+        if (!trail) {
+          if (size < 1.8) {
+            ctx.fillRect(px - size / 2, py - size / 2, size, size)
+          } else {
+            ctx.beginPath()
+            ctx.arc(px, py, size / 2, 0, Math.PI * 2)
+            ctx.fill()
+          }
         }
 
         if (flash[i] > 0) {
@@ -297,9 +338,18 @@ export function GlimmerField(props: GlimmerFieldProps) {
       return dz
     }
 
+    let lastDraw = 0
     const loop = (now: number) => {
       raf = 0
       if (!visible) return
+      // High-refresh screens fire rAF 120–144 times a second. The field does
+      // not need that, so cap it at ~60 fps and leave the headroom to the
+      // rest of the page.
+      if (now - lastDraw < 15) {
+        raf = requestAnimationFrame(loop)
+        return
+      }
+      lastDraw = now
       const dz = step(now)
       draw(now, dz)
       raf = requestAnimationFrame(loop)

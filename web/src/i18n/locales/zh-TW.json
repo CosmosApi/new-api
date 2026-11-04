@@ -6076,6 +6076,8 @@
     "Switch to JSON": "切換到 JSON",
     "Switch to Visual": "切換到可視化",
     "Switch to visual editor": "切換至視覺化編輯",
+    "Switch to light theme": "切換到淺色模式",
+    "Switch to dark theme": "切換到深色模式",
     "Switch to visual mode to add rules or apply templates.": "切換至視覺化模式後，可新增規則或套用範本。",
     "Switch to visual pricing?": "切換至視覺化定價？",
     "Switching regenerates the expression from the price table and replaces its original formatting and tier names. Changes apply only after saving.": "切換後將根據價格表重新產生運算式，取代原始寫法和級距名稱。變更將在儲存後生效。",
@@ -7533,6 +7535,17 @@
     "Compare model pricing": "比較模型價格",
     "Your API workspace": "你的 API 工作空間",
     "Balance, traffic, and service health, together.": "餘額、呼叫與服務狀態，一處掌握。",
-    "Click anywhere in the galaxy": "點擊星系任意位置"
+    "Click anywhere in the galaxy": "點擊星系任意位置",
+    "Guardrails you can check for yourself": "可以自己核驗的安全護欄",
+    "Nothing here asks for blind trust. Every key, call and charge leaves a record you can read.": "這裡的每項保障都不需要你盲目相信：金鑰、呼叫和扣費都留有可查的紀錄。",
+    "Keys": "金鑰",
+    "Scoped keys, instant revoke": "金鑰可限權，撤銷即時生效",
+    "Give each key its own quota, expiry, model list and allowed IPs. Revoke it and the next request is refused.": "每把金鑰可單獨設定額度、有效期限、可用模型和允許的 IP。撤銷後，下一次請求就會被拒絕。",
+    "Records": "紀錄",
+    "The receipt, not the conversation": "留存帳單，不留對話",
+    "Usage logs keep the model, tokens and cost of each call. Prompts and replies are forwarded to the provider, not stored.": "用量日誌記錄每次呼叫的模型、tokens 和費用。提示詞和回覆只是轉發給服務商，不會被留存。",
+    "One wallet, one owner": "一個錢包，一個歸屬",
+    "Every key draws only from its own account's balance, so one team's usage never touches another's.": "每把金鑰只從所屬帳戶的餘額扣費，任何團隊的用量都不會動到別家的額度。",
+    "Official APIs only — no reseller keys, no swapped models.": "只接官方 API —— 沒有轉售金鑰，也不會偷換模型。"
   }
 }
