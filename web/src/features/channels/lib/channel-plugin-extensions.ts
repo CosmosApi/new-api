@@ -18,7 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import type { TaskPluginOption } from '../api'
 import {
-  CHANNEL_TYPE_NEW_API,
+  CHANNEL_TYPE_PICO_API,
   CHANNEL_TYPE_OPTIONS,
   CHANNEL_TYPE_TASK_PLUGIN,
 } from '../constants'
@@ -44,7 +44,7 @@ export function supportsChannelPluginExtensions(channelType: number): boolean {
   )
 }
 
-// A New API channel proxies an upstream gateway that may host many plugins,
+// A PicoAPI channel proxies an upstream gateway that may host many plugins,
 // so the administrator lists the plugins the channel is extended with. The
 // single task_plugin_key stays valid there and is shown together with the list.
 export function readTaskExtendPluginKeys(
@@ -54,7 +54,7 @@ export function readTaskExtendPluginKeys(
     | null
     | undefined
 ): string[] {
-  if (channelType !== CHANNEL_TYPE_NEW_API || !setting) return []
+  if (channelType !== CHANNEL_TYPE_PICO_API || !setting) return []
   const keys = Array.isArray(setting.task_extend_plugin_keys)
     ? setting.task_extend_plugin_keys.filter(
         (key): key is string => typeof key === 'string' && key.trim() !== ''
@@ -67,10 +67,10 @@ export function readTaskExtendPluginKeys(
   return [...new Set(single ? [single, ...keys] : keys)]
 }
 
-// A New API channel proxies another gateway, which serves a plugin's wire
+// A PicoAPI channel proxies another gateway, which serves a plugin's wire
 // format only on the plugin's own native routes. Only drivers that declare
 // they address such a gateway can be bound there; the server rejects the rest.
-export function supportsNewAPIUpstream(
+export function supportsPicoAPIUpstream(
   plugin: Pick<TaskPluginOption, 'upstreams'>
 ): boolean {
   return plugin.upstreams?.includes('new_api') ?? false
@@ -82,7 +82,7 @@ export function getChannelPluginExtensions(
   extendPluginKeys: readonly string[] = []
 ): TaskPluginOption[] {
   if (!supportsChannelPluginExtensions(channelType)) return []
-  if (channelType === CHANNEL_TYPE_NEW_API) {
+  if (channelType === CHANNEL_TYPE_PICO_API) {
     return plugins.filter((plugin) => extendPluginKeys.includes(plugin.key))
   }
   return plugins.filter((plugin) => plugin.channelTypes?.includes(channelType))

@@ -1,0 +1,264 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+
+/* ========== 流星雨夜空背景 ========== */
+
+.meteor-field {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* 深色模式：深蓝夜空渐变 */
+  background: linear-gradient(
+    to bottom,
+    #0a0e1a 0%,
+    #141a2e 40%,
+    #1a2038 100%
+  );
+}
+
+/* 浅色模式：浅蓝天空渐变 */
+:root:not(.dark) .meteor-field {
+  background: linear-gradient(
+    to bottom,
+    #f5f7fa 0%,
+    #e8eef5 40%,
+    #dce4ef 100%
+  );
+}
+
+/* 简约模式：去掉星空背景 */
+.meteor-field-minimal .meteor-stars {
+  display: none;
+}
+
+/* ========== 星空背景层 ========== */
+
+.meteor-stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+}
+
+/* 用 box-shadow 批量生成随机星点 */
+.meteor-stars::before,
+.meteor-stars::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    120px 80px 0 0 rgba(255, 255, 255, 0.8),
+    340px 140px 0 0 rgba(255, 255, 255, 0.6),
+    580px 200px 0 0 rgba(255, 255, 255, 0.9),
+    920px 100px 0 0 rgba(255, 255, 255, 0.7),
+    1200px 300px 0 0 rgba(255, 255, 255, 0.5),
+    1400px 180px 0 0 rgba(255, 255, 255, 0.8),
+    80px 420px 0 0 rgba(255, 255, 255, 0.6),
+    460px 520px 0 0 rgba(255, 255, 255, 0.9),
+    720px 380px 0 0 rgba(255, 255, 255, 0.7),
+    1100px 600px 0 0 rgba(255, 255, 255, 0.5),
+    200px 720px 0 0 rgba(255, 255, 255, 0.8),
+    640px 840px 0 0 rgba(255, 255, 255, 0.6),
+    980px 760px 0 0 rgba(255, 255, 255, 0.9),
+    1320px 880px 0 0 rgba(255, 255, 255, 0.7),
+    300px 1020px 0 0 rgba(255, 255, 255, 0.5),
+    520px 1140px 0 0 rgba(255, 255, 255, 0.8),
+    860px 1060px 0 0 rgba(255, 255, 255, 0.6),
+    1240px 1180px 0 0 rgba(255, 255, 255, 0.9),
+    140px 1320px 0 0 rgba(255, 255, 255, 0.7),
+    780px 1420px 0 0 rgba(255, 255, 255, 0.5);
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+.meteor-stars::after {
+  animation-delay: 2s;
+  box-shadow:
+    240px 60px 0 0 rgba(255, 255, 255, 0.7),
+    480px 180px 0 0 rgba(255, 255, 255, 0.5),
+    760px 120px 0 0 rgba(255, 255, 255, 0.8),
+    1040px 240px 0 0 rgba(255, 255, 255, 0.6),
+    1380px 80px 0 0 rgba(255, 255, 255, 0.9),
+    160px 380px 0 0 rgba(255, 255, 255, 0.7),
+    560px 480px 0 0 rgba(255, 255, 255, 0.5),
+    840px 560px 0 0 rgba(255, 255, 255, 0.8),
+    1180px 420px 0 0 rgba(255, 255, 255, 0.6),
+    1480px 680px 0 0 rgba(255, 255, 255, 0.9),
+    320px 800px 0 0 rgba(255, 255, 255, 0.7),
+    680px 920px 0 0 rgba(255, 255, 255, 0.5),
+    1020px 860px 0 0 rgba(255, 255, 255, 0.8),
+    1360px 1000px 0 0 rgba(255, 255, 255, 0.6),
+    420px 1120px 0 0 rgba(255, 255, 255, 0.9),
+    760px 1260px 0 0 rgba(255, 255, 255, 0.7),
+    1100px 1180px 0 0 rgba(255, 255, 255, 0.5),
+    80px 1440px 0 0 rgba(255, 255, 255, 0.8),
+    900px 1380px 0 0 rgba(255, 255, 255, 0.6),
+    1280px 1500px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+/* 浅色主题星点（金色） */
+:root:not(.dark) .meteor-stars::before,
+:root:not(.dark) .meteor-stars::after {
+  background: #ffd700;
+  opacity: 0.4;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ========== 流星雨层 ========== */
+
+.meteor-shower {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.meteor {
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  width: 1px;
+  height: 180px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(200, 220, 255, 0.9) 8%,
+    rgba(150, 180, 255, 0.6) 18%,
+    rgba(120, 150, 255, 0.3) 35%,
+    rgba(100, 130, 255, 0.15) 55%,
+    transparent 100%
+  );
+  border-radius: 50% 50% 0 0;
+  filter: blur(0.8px);
+  transform: rotate(215deg);
+  animation: meteor-fall var(--duration) ease-in var(--delay) infinite;
+  opacity: 0;
+}
+
+/* 流星头部白炽光点 */
+.meteor::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 6px 1px rgba(255, 255, 255, 1),
+    0 0 12px 3px rgba(200, 220, 255, 0.7),
+    0 0 20px 5px rgba(150, 180, 255, 0.4);
+}
+
+/* 浅色主题流星（淡金到蓝紫渐变） */
+:root:not(.dark) .meteor {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 240, 200, 1) 0%,
+    rgba(220, 200, 255, 0.8) 10%,
+    rgba(180, 160, 255, 0.5) 22%,
+    rgba(150, 130, 255, 0.25) 40%,
+    rgba(120, 100, 255, 0.12) 60%,
+    transparent 100%
+  );
+}
+
+:root:not(.dark) .meteor::before {
+  background: #fffaed;
+  box-shadow:
+    0 0 6px 1px rgba(255, 250, 237, 1),
+    0 0 12px 3px rgba(220, 200, 255, 0.6),
+    0 0 20px 5px rgba(180, 160, 255, 0.3);
+}
+
+@keyframes meteor-fall {
+  0% {
+    opacity: 0;
+    transform: rotate(215deg) translateY(0);
+  }
+  3% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(215deg) translateY(150vh);
+  }
+}
+
+/* ========== 点击涟漪 ========== */
+
+.meteor-ripple {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(255, 154, 92, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: ripple-expand 1.2s ease-out forwards;
+}
+
+:root:not(.dark) .meteor-ripple {
+  border-color: rgba(232, 110, 48, 0.6);
+}
+
+@keyframes ripple-expand {
+  0% {
+    width: 20px;
+    height: 20px;
+    opacity: 1;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    margin: -100px 0 0 -100px;
+    opacity: 0;
+  }
+}
+
+/* ========== prefers-reduced-motion 降级 ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .meteor-stars::before,
+  .meteor-stars::after {
+    animation: none;
+  }
+  .meteor {
+    display: none;
+  }
+  .meteor-ripple {
+    animation: none;
+    display: none;
+  }
+}

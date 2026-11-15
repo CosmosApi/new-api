@@ -18,9 +18,23 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { describe, expect, test } from 'vitest'
 
-import { compareSystemVersions, selectLatestRelease } from '../releases'
+import {
+  compareSystemVersions,
+  selectLatestRelease,
+  getSystemReleaseUrl,
+} from '../releases'
 
 describe('system release ordering', () => {
+  test.each([
+    undefined,
+    'javascript:alert(1)',
+    'https://user:secret@example.com/release',
+    '/relative',
+  ])('omits a missing or unsafe release URL: %s', (html_url) => {
+    expect(
+      getSystemReleaseUrl({ tag_name: 'v1.0.0', prerelease: false, html_url })
+    ).toBeNull()
+  })
   test.each([
     ['v0.13.2', 'v1.0.0-alpha.1', -1],
     ['v1.0.0-alpha.2', 'v1.0.0-beta.1', -1],

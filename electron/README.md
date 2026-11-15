@@ -1,6 +1,6 @@
-# New API Electron Desktop App
+# PicoAPI Electron Desktop App
 
-This directory contains the Electron wrapper for New API, providing a native desktop application with system tray support for Windows, macOS, and Linux.
+This directory contains the Electron wrapper for PicoAPI, providing a native desktop application with system tray support for Windows, macOS, and Linux.
 
 ## Prerequisites
 
@@ -9,8 +9,8 @@ The Electron app requires the compiled Go binary to function. You have two optio
 
 **Option A: Use existing binary (without Go installed)**
 ```bash
-# If you have a pre-built binary (e.g., new-api-macos)
-cp ../new-api-macos ../new-api
+# If you have a pre-built binary (e.g., picoapi-macos)
+cp ../picoapi-macos ../picoapi
 ```
 
 **Option B: Build from source (requires Go)**
@@ -76,6 +76,8 @@ const PORT = 3000; // Change to desired port
 ### Database Location
 - **Development**: `../data/new-api.db` (project directory)
 - **Production**:
-  - macOS: `~/Library/Application Support/New API/data/`
-  - Windows: `%APPDATA%/New API/data/`
-  - Linux: `~/.config/New API/data/`
+  - macOS: `~/Library/Application Support/PicoAPI/data/`
+  - Windows: `%APPDATA%/PicoAPI/data/`
+  - Linux: `~/.config/PicoAPI/data/`
+
+Existing desktop installations with a database in `New-API-App/data/` continue to use that directory.

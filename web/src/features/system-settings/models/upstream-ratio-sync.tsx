@@ -18,7 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckSquare, RefreshCcw } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
@@ -62,8 +62,6 @@ import {
   DEFAULT_ENDPOINT,
   MODELS_DEV_PRESET_ENDPOINT,
   MODELS_DEV_PRESET_ID,
-  OFFICIAL_CHANNEL_ENDPOINT,
-  OFFICIAL_CHANNEL_ID,
   OPENROUTER_CHANNEL_TYPE,
   OPENROUTER_ENDPOINT,
 } from './constants'
@@ -82,7 +80,6 @@ import { UpstreamRatioSyncTable } from './upstream-ratio-sync-table'
 
 function getDefaultEndpointForChannel(channel: UpstreamChannel): string {
   if (channel.id === MODELS_DEV_PRESET_ID) return MODELS_DEV_PRESET_ENDPOINT
-  if (channel.id === OFFICIAL_CHANNEL_ID) return OFFICIAL_CHANNEL_ENDPOINT
   if (channel.type === OPENROUTER_CHANNEL_TYPE) return OPENROUTER_ENDPOINT
   return DEFAULT_ENDPOINT
 }
@@ -108,7 +105,7 @@ export function UpstreamRatioSync() {
   const [channelDialogOpen, setChannelDialogOpen] = useState(false)
   const [conflictDialogOpen, setConflictDialogOpen] = useState(false)
   const [selectedChannelIds, setSelectedChannelIds] = useState<number[]>([])
-  const [channelEndpoints, setChannelEndpoints] = useState<
+  const [channelEndpointOverrides, setChannelEndpoints] = useState<
     Record<number, string>
   >({})
   const [differences, setDifferences] = useState<DifferencesMap>({})
@@ -144,16 +141,13 @@ export function UpstreamRatioSync() {
     enabled: channelDialogOpen,
   })
   const channels = useMemo(() => channelsData?.data ?? [], [channelsData?.data])
-  useEffect(() => {
-    if (!channels.length) return
-    setChannelEndpoints((previous) => {
-      const next = { ...previous }
-      for (const channel of channels) {
-        next[channel.id] ??= getDefaultEndpointForChannel(channel)
-      }
-      return next
-    })
-  }, [channels])
+  const channelEndpoints = useMemo(() => {
+    const endpoints = { ...channelEndpointOverrides }
+    for (const channel of channels) {
+      endpoints[channel.id] ??= getDefaultEndpointForChannel(channel)
+    }
+    return endpoints
+  }, [channelEndpointOverrides, channels])
   const adjustedPrices = useMemo(
     () =>
       Object.fromEntries(

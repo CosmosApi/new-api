@@ -1,0 +1,284 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+
+/* ═══════════════════════════════════════════════════════════════
+   PicoAPI 全新设计系统
+   参考：Vercel/Stripe/Supabase/Linear 现代设计
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ────────────────────────────────────────────────────────────
+   设计 Token
+   ──────────────────────────────────────────────────────────── */
+
+:root {
+  /* 品牌色：蓝绿→紫色渐变（完全不同于橙色系） */
+  --pico-primary: #00d4cc;
+  --pico-primary-dark: #00b8c4;
+  --pico-secondary: #8b7ff5;
+  --pico-secondary-dark: #7c6fe8;
+
+  /* 浅色模式 */
+  --pico-bg: #ffffff;
+  --pico-bg-secondary: #f8f9fb;
+  --pico-border: rgba(0, 0, 0, 0.08);
+  --pico-border-strong: rgba(0, 0, 0, 0.15);
+  --pico-text: #1f2937;
+  --pico-text-muted: #6b7280;
+
+  /* 渐变 */
+  --pico-gradient-primary: linear-gradient(135deg, #00d4cc 0%, #00b8d4 50%, #0096ff 100%);
+  --pico-gradient-secondary: linear-gradient(135deg, #8b7ff5 0%, #a78bfa 50%, #c084fc 100%);
+  --pico-gradient-border: linear-gradient(90deg, transparent 0%, #00d4cc 20%, #00b8d4 50%, #0096ff 80%, transparent 100%);
+
+  /* 阴影 */
+  --pico-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --pico-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --pico-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --pico-shadow-glow: 0 0 40px -20px rgba(0, 212, 204, 0.3);
+}
+
+.dark {
+  /* 深色模式 */
+  --pico-bg: #0d1117;
+  --pico-bg-secondary: #161b22;
+  --pico-border: rgba(255, 255, 255, 0.08);
+  --pico-border-strong: rgba(255, 255, 255, 0.15);
+  --pico-text: #e5e7eb;
+  --pico-text-muted: #9ca3af;
+
+  /* 深色模式渐变 */
+  --pico-gradient-border: linear-gradient(90deg, transparent 0%, #8b7ff5 20%, #a78bfa 50%, #c084fc 80%, transparent 100%);
+
+  /* 深色模式阴影 */
+  --pico-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --pico-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --pico-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --pico-shadow-glow: 0 0 40px -20px rgba(139, 127, 245, 0.4);
+}
+
+/* ────────────────────────────────────────────────────────────
+   导航栏：扁平分段式（参考 Vercel/Linear）
+   ──────────────────────────────────────────────────────────── */
+
+.pico-public-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+}
+
+.pico-public-header .pico-public-nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px) saturate(1.1);
+  border: none;
+  border-bottom: 2px solid var(--pico-border);
+  border-radius: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 浅色模式：底部渐变线 */
+.pico-public-header .pico-public-nav::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--pico-gradient-border);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* 深色模式 */
+.dark .pico-public-header .pico-public-nav {
+  background: rgba(13, 17, 23, 0.9);
+  border-bottom-color: var(--pico-border-strong);
+}
+
+/* 滚动时显示渐变底边 */
+.pico-public-header .pico-public-nav[data-scrolled='true'] {
+  box-shadow: var(--pico-shadow-md), var(--pico-shadow-glow);
+}
+
+.pico-public-header .pico-public-nav[data-scrolled='true']::after {
+  opacity: 1;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Hero 区域：几何网格动画（替代星空粒子）
+   ──────────────────────────────────────────────────────────── */
+
+.picoapi-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--pico-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pico-border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 80%);
+  pointer-events: none;
+}
+
+.picoapi-hero-glow {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 212, 204, 0.15) 0%,
+    rgba(0, 184, 212, 0.08) 30%,
+    transparent 70%
+  );
+  animation: picoapi-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.dark .picoapi-hero-glow {
+  background: radial-gradient(
+    circle,
+    rgba(139, 127, 245, 0.2) 0%,
+    rgba(167, 139, 250, 0.1) 30%,
+    transparent 70%
+  );
+}
+
+@keyframes picoapi-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+/* ────────────────────────────────────────────────────────────
+   卡片：清晰边框 + 几何化设计
+   ──────────────────────────────────────────────────────────── */
+
+.picoapi-card {
+  background: var(--pico-bg);
+  border: 2px solid var(--pico-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.picoapi-card:hover {
+  border-color: var(--pico-primary);
+  box-shadow: var(--pico-shadow-md), var(--pico-shadow-glow);
+  transform: translateY(-2px);
+}
+
+.dark .picoapi-card {
+  background: var(--pico-bg-secondary);
+  border-color: var(--pico-border-strong);
+}
+
+.dark .picoapi-card:hover {
+  border-color: var(--pico-secondary);
+}
+
+/* ────────────────────────────────────────────────────────────
+   按钮：渐变 + 清晰状态
+   ──────────────────────────────────────────────────────────── */
+
+.picoapi-btn-primary {
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  background: var(--pico-gradient-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.picoapi-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 212, 204, 0.3);
+}
+
+.picoapi-btn-outline {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 2px solid var(--pico-primary);
+  border-radius: 8px;
+  color: var(--pico-primary);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.picoapi-btn-outline:hover {
+  background: var(--pico-primary);
+  color: white;
+}
+
+.dark .picoapi-btn-outline {
+  border-color: var(--pico-secondary);
+  color: var(--pico-secondary);
+}
+
+.dark .picoapi-btn-outline:hover {
+  background: var(--pico-secondary);
+  color: white;
+}
+
+/* ────────────────────────────────────────────────────────────
+   响应式 + 无障碍
+   ──────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .picoapi-hero-glow,
+  .picoapi-card,
+  .picoapi-btn-primary,
+  .picoapi-btn-outline {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .picoapi-hero-grid {
+    background-size: 40px 40px;
+  }
+
+  .picoapi-hero-glow {
+    width: 400px;
+    height: 400px;
+  }
+
+  .pico-public-header .pico-public-nav {
+    padding: 0.75rem 1rem;
+    gap: 1rem;
+  }
+}
+

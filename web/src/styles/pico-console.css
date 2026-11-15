@@ -1,0 +1,347 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+/* PicoAPI console: warm petals, precise instruments, a quiet signal. */
+.pico-console {
+  --app-header-height: 3.5rem;
+  --pico-console-signal: var(--pico-cyan, #5baeb5);
+  /* 整体背景采用与首页一致的浅色/深色背景 */
+  background: var(--background);
+}
+
+.dark .pico-console {
+  --pico-console-signal: #67d3cf;
+}
+
+.pico-console-header {
+  border-bottom: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  background: color-mix(in oklch, var(--sidebar) 92%, transparent);
+  backdrop-filter: blur(20px);
+  height: 3.5rem;
+  --app-header-height: 3.5rem;
+}
+
+.pico-header-divider {
+  width: 1px;
+  height: 18px;
+  margin-inline: 10px;
+  background: color-mix(in oklch, var(--border) 70%, transparent);
+  transform: rotate(16deg);
+}
+
+.pico-console .pico-console-surface {
+  /* 主内容区域：微妙渐变 + 点阵背景（与首页一致） */
+  background:
+    radial-gradient(
+      ellipse at 85% 5%,
+      color-mix(in oklch, var(--pico-console-signal) 3%, transparent),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 15% 95%,
+      color-mix(in oklch, var(--primary) 4%, transparent),
+      transparent 60%
+    ),
+    var(--background);
+}
+
+.pico-console [data-slot='sidebar-inner'] {
+  /* 侧边栏：柔和渐变 + 与首页一致的色调 */
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--card) 45%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 0% 100%,
+      color-mix(in oklch, var(--primary) 5%, transparent),
+      transparent 65%
+    ),
+    var(--sidebar);
+}
+
+:where(.pico-console, .pico-sidebar-content) [data-slot='sidebar-group-label'] {
+  margin-top: 8px;
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.55;
+}
+
+:where(.pico-console, .pico-sidebar-content) [data-slot='sidebar-menu'] {
+  gap: 2px;
+}
+
+:where(.pico-console, .pico-sidebar-content) [data-slot='sidebar-menu-button'] {
+  border-radius: 6px;
+  height: 36px;
+  padding-inline: 12px;
+  font-size: 14px;
+  position: relative;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+:where(.pico-console, .pico-sidebar-content)
+  [data-slot='sidebar-menu-button'][data-active] {
+  background: color-mix(in oklch, var(--primary) 9%, var(--sidebar));
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+:where(.pico-console, .pico-sidebar-content)
+  [data-slot='sidebar-menu-button'][data-active]::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  background: var(--primary);
+  border-radius: 0 2px 2px 0;
+}
+
+:where(.pico-console, .pico-sidebar-content)
+  [data-slot='sidebar-menu-button'][data-active]
+  > svg {
+  color: var(--primary);
+}
+
+.pico-sidebar-footer {
+  border-top: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  padding-block: 14px;
+  margin-top: 8px;
+}
+
+.pico-model-link {
+  background: color-mix(in oklch, var(--primary) 5%, var(--card));
+  border: 1px solid color-mix(in oklch, var(--primary) 12%, transparent);
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: all 180ms ease;
+}
+
+.pico-model-link:hover {
+  background: color-mix(in oklch, var(--primary) 8%, var(--card));
+  border-color: color-mix(in oklch, var(--primary) 18%, transparent);
+  transform: translateY(-1px);
+}
+
+.pico-model-link > svg:first-child {
+  width: 32px;
+  height: 32px;
+}
+
+.pico-console [data-collapsible='icon'] .pico-model-link > svg:first-child {
+  width: 24px;
+  height: 24px;
+}
+
+.pico-console [data-collapsible='icon'] .pico-sidebar-footer {
+  padding-inline: 6px;
+}
+
+.pico-workspace-welcome {
+  position: relative;
+  display: flex;
+  min-height: 148px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklch, var(--primary) 19%, var(--border));
+  border-radius: 20px;
+  padding: 24px;
+  background:
+    radial-gradient(
+      ellipse at 90% 20%,
+      color-mix(in oklch, var(--pico-console-signal) 10%, transparent),
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse at 0% 100%,
+      color-mix(in oklch, var(--primary) 8%, transparent),
+      transparent 65%
+    ),
+    var(--card);
+}
+
+.pico-workspace-welcome::after {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    color-mix(in oklch, var(--pico-console-signal) 20%, transparent) 0.7px,
+    transparent 0.7px
+  );
+  background-size: 16px 16px;
+  mask-image: linear-gradient(90deg, transparent 50%, #000);
+  pointer-events: none;
+  content: '';
+}
+
+.pico-workspace-orbit {
+  position: relative;
+  display: flex;
+  width: 200px;
+  height: 100px;
+  flex: 0 0 200px;
+  align-items: center;
+  justify-content: center;
+}
+
+.pico-orbit-track {
+  position: absolute;
+  border: 1px solid
+    color-mix(in oklch, var(--pico-console-signal) 24%, transparent);
+  border-radius: 50%;
+  transform: rotate(-24deg);
+}
+
+.pico-orbit-track-outer {
+  width: 200px;
+  height: 104px;
+  border-style: dashed;
+  border-color: color-mix(in oklch, var(--primary) 25%, transparent);
+}
+
+.pico-orbit-track-inner {
+  width: 150px;
+  height: 78px;
+  transform: rotate(24deg);
+}
+
+.pico-orbit-dot {
+  position: absolute;
+  z-index: 1;
+  top: 4px;
+  left: 36px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pico-console-signal);
+  box-shadow: 0 0 0 5px
+    color-mix(in oklch, var(--pico-console-signal) 10%, transparent);
+}
+
+.pico-console-panel {
+  /* 卡片样式：使用 brand-card 风格，柔和边框 + 微妙阴影 */
+  border-color: color-mix(in oklch, var(--border) 70%, transparent);
+  background: color-mix(in oklab, var(--brand-surface) 88%, transparent);
+  box-shadow:
+    0 1px 2px color-mix(in oklch, var(--foreground) 3%, transparent),
+    0 4px 12px -8px color-mix(in oklch, var(--primary) 12%, transparent);
+}
+
+.pico-panel-heading {
+  background: color-mix(in oklch, var(--muted) 24%, transparent);
+}
+
+.pico-summary-metric {
+  border-color: color-mix(in oklch, var(--border) 65%, transparent);
+  background: color-mix(in oklch, var(--background) 55%, var(--card));
+}
+
+.pico-summary-metric:focus-within {
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 25%, transparent);
+}
+
+.pico-balance-panel {
+  background:
+    radial-gradient(
+      ellipse at 100% 0%,
+      color-mix(in oklch, var(--primary) 13%, transparent),
+      transparent 75%
+    ),
+    color-mix(in oklch, var(--primary) 5%, var(--card));
+}
+
+.pico-console .pico-stat-card {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 768px) {
+  .pico-console .pico-console-surface {
+    border: 1px solid color-mix(in oklch, var(--border) 80%, transparent);
+    box-shadow: 0 4px 24px -16px
+      color-mix(in oklch, var(--foreground) 13%, transparent);
+  }
+}
+
+@media (max-width: 639px) {
+  .pico-workspace-welcome {
+    min-height: 132px;
+    padding: 20px;
+  }
+
+  .pico-workspace-welcome > div:first-child {
+    max-width: calc(100% - 48px);
+  }
+
+  .pico-workspace-orbit {
+    position: absolute;
+    right: -68px;
+    width: 156px;
+    flex-basis: 156px;
+    opacity: 0.4;
+  }
+
+  .pico-workspace-orbit > svg {
+    transform: translateX(-20px) rotate(-12deg);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :where(.pico-console, .pico-sidebar-content)
+    [data-slot='sidebar-menu-button']:not([data-active]):hover {
+    background: color-mix(in oklch, var(--primary) 7%, var(--sidebar));
+  }
+
+  .pico-summary-metric:hover {
+    border-color: color-mix(
+      in oklch,
+      var(--pico-console-signal) 35%,
+      var(--border)
+    );
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pico-summary-metric {
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .pico-workspace-orbit > svg {
+    animation: pico-console-float 7s ease-in-out infinite;
+  }
+
+  @keyframes pico-console-float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -5px;
+    }
+  }
+}

@@ -1,8 +1,10 @@
 <div align="center">
 
-![new-api](/web/public/logo.png)
+![PicoAPI](/web/public/logo.png)
 
-# New API
+# PicoAPI
+
+PicoAPI は [New API](https://github.com/QuantumNous/new-api) を改変したものです。ブランドとローカルビルドを 2026-11-12 に変更しました。
 
 **モデル、アプリケーション、Agent をつなぐ AI ゲートウェイ**
 
@@ -57,7 +59,7 @@
 
 ## 📝 プロジェクト説明
 
-New API は、アプリケーション、Agent、チーム向けのセルフホスト型 AI ゲートウェイです。各社のモデルサービスを共通の入口に接続し、ルーティング、アクセス権、使用量、コストを一つの管理画面で扱えます。
+PicoAPI は、アプリケーション、Agent、チーム向けのセルフホスト型 AI ゲートウェイです。各社のモデルサービスを共通の入口に接続し、ルーティング、アクセス権、使用量、コストを一つの管理画面で扱えます。
 
 チーム内で許可済みのモデルを共有する、クライアントの再設定を減らしてプロバイダーを切り替える、複数モデルを扱うプライベートサービスを構築するといった用途に使えます。OpenAI、Anthropic、Google Gemini、Azure OpenAI、AWS Bedrock、Vertex AI、DeepSeek、Qwen などに対応しています。
 
@@ -152,12 +154,13 @@ New API は、アプリケーション、Agent、チーム向けのセルフホ�
 SQLite を使う単一インスタンスを、ローカルホスト限定で起動します。
 
 ```bash
+docker build -t picoapi:local .
 mkdir -p data
-docker run --name new-api -d --restart unless-stopped \
+docker run --name picoapi -d --restart unless-stopped \
   -p 127.0.0.1:3000:3000 \
   -e TZ=Asia/Shanghai \
   -v "$(pwd)/data:/data" \
-  calciumion/new-api:latest
+  picoapi:local
 ```
 
 [http://localhost:3000](http://localhost:3000) を開き、初期設定ウィザードで管理者アカウントを作成します。SQLite データベースはマウントした `data` ディレクトリに保存され、コンテナを置き換えても残ります。
@@ -167,20 +170,20 @@ docker run --name new-api -d --restart unless-stopped \
 1. 上流の API キー、利用するモデル、グループを設定してチャネルを追加し、チャネルテストを実行します。
 2. モデルの料金を設定し、ユーザーに利用可能なクォータまたは有効なサブスクリプションがあることを確認します。
 3. 管理画面で、同じグループとモデルにアクセスできる API キーを作成します。
-4. OpenAI 互換クライアントでは Base URL を `http://localhost:3000/v1` に設定し、**New API が発行したキー**を使います。
+4. OpenAI 互換クライアントでは Base URL を `http://localhost:3000/v1` に設定し、**PicoAPI が発行したキー**を使います。
 
-シェルの `NEW_API_KEY` にそのキーを設定し、アクセス可能なモデルを確認します。
+シェルの `PICOAPI_KEY` にそのキーを設定し、アクセス可能なモデルを確認します。
 
 ```bash
 curl --fail-with-body http://localhost:3000/v1/models \
-  -H "Authorization: Bearer ${NEW_API_KEY}"
+  -H "Authorization: Bearer ${PICOAPI_KEY}"
 ```
 
 次に Responses を呼び出します。`your-enabled-model` は、このインターフェースに対応する有効なモデル名に置き換えてください。
 
 ```bash
 curl --fail-with-body http://localhost:3000/v1/responses \
-  -H "Authorization: Bearer ${NEW_API_KEY}" \
+  -H "Authorization: Bearer ${PICOAPI_KEY}" \
   -H "Content-Type: application/json" \
   -d '{"model":"your-enabled-model","input":"Hello!"}'
 ```
@@ -191,17 +194,16 @@ curl --fail-with-body http://localhost:3000/v1/responses \
 
 ### Docker Compose
 
-リポジトリの [Compose 設定](./docker-compose.yml) は、既定で **New API + PostgreSQL + Redis** を起動します。MySQL と独立した ClickHouse ログデータベースの設定例も含まれます。
+リポジトリの [Compose 設定](./docker-compose.yml) は、既定で **PicoAPI + PostgreSQL + Redis** を起動します。MySQL と独立した ClickHouse ログデータベースの設定例も含まれます。
 
 ```bash
-git clone https://github.com/QuantumNous/new-api.git
-cd new-api
+cd /path/to/your/checkout
 ```
 
 起動前に `docker-compose.yml` を編集し、データベースと Redis のサービスおよび接続文字列にあるサンプルパスワードを変更します。永続的に使うランダムな `SESSION_SECRET` も設定してください（`openssl rand -hex 32` で生成可能）。HTTPS の管理画面には `SESSION_COOKIE_SECURE=true` を設定し、公開 HTTPS オリジンを `SESSION_COOKIE_TRUSTED_URL` に正確に指定します。
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 docker compose logs -f new-api
 ```
 
@@ -303,20 +305,6 @@ bun run dev -- --port 5173
 
 ---
 
-## 📜 ライセンス
-
-このプロジェクトは [GNU Affero General Public License v3.0 (AGPLv3)](./LICENSE) の下でライセンスされています。
-
-AGPLv3 第 7 条に基づく[追加条項](./NOTICE)が適用されます。変更版では、適切な法的表示と、画面上の目立つ概要・法的情報・フッター・著作者表示の箇所に `Frontend design and development by New API contributors.` を残し、元のプロジェクト <https://github.com/QuantumNous/new-api> への可視リンクを保持する必要があります。
-
-本プロジェクトは、[One API](https://github.com/songquanpeng/one-api)（MITライセンス）をベースに開発されたオープンソースプロジェクトです。
-
-お客様の組織のポリシーがAGPLv3ライセンスのソフトウェアの使用を許可していない場合、またはAGPLv3のオープンソース義務を回避したい場合は、こちらまでお問い合わせください：[support@quantumnous.com](mailto:support@quantumnous.com)
-
-著作者と依存関係の表示については [NOTICE](./NOTICE) と[サードパーティライセンス](./THIRD-PARTY-LICENSES.md)を参照してください。
-
----
-
 ## 🌟 スター履歴
 
 <div align="center">
@@ -329,7 +317,7 @@ AGPLv3 第 7 条に基づく[追加条項](./NOTICE)が適用されます。変�
 
 <div align="center">
 
-### 💖 New APIをご利用いただきありがとうございます
+### 💖 PicoAPIをご利用いただきありがとうございます
 
 このプロジェクトがあなたのお役に立てたなら、ぜひ ⭐️ スターをください！
 

@@ -42,7 +42,7 @@ import { resolveLocalizedText } from '@/lib/localized-text'
 import type { TaskPluginOption } from '../../api'
 import {
   CHANNEL_PROVIDER_PRESENTATION,
-  CHANNEL_TYPE_NEW_API,
+  CHANNEL_TYPE_PICO_API,
   CHANNEL_TYPE_OPTIONS,
   CHANNEL_TYPE_SUB2API,
   CHANNEL_TYPE_TASK_PLUGIN,
@@ -70,6 +70,7 @@ type ChannelProviderPickerProps = {
 
 export function ChannelProviderPicker(props: ChannelProviderPickerProps) {
   const { t, i18n } = useTranslation()
+  const language = i18n.language
   const shouldReduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
   const [search, setSearch] = useState('')
   const [selectedFilter, setSelectedFilter] = useState('all')
@@ -125,10 +126,7 @@ export function ChannelProviderPicker(props: ChannelProviderPickerProps) {
             label: plugin.name,
             target: { kind: 'plugin', key: plugin.key },
             plugin,
-            description: resolveLocalizedText(
-              plugin.description,
-              i18n.language
-            ),
+            description: resolveLocalizedText(plugin.description, language),
             searchText: `${plugin.name} ${plugin.key} ${pluginAliases.get(plugin.key) ?? ''}`,
           })
         }
@@ -140,7 +138,7 @@ export function ChannelProviderPicker(props: ChannelProviderPickerProps) {
         const isCustom =
           option.value === 8 || option.value === CHANNEL_TYPE_ADVANCED_CUSTOM
         const isGateway =
-          option.value === CHANNEL_TYPE_NEW_API ||
+          option.value === CHANNEL_TYPE_PICO_API ||
           option.value === CHANNEL_TYPE_SUB2API
         if (filter === 'gateway' && !isGateway) continue
         if (filter === 'custom' && !isCustom) continue
@@ -152,10 +150,7 @@ export function ChannelProviderPicker(props: ChannelProviderPickerProps) {
         )
         const extensionSummary = extensions
           .map((plugin) =>
-            [
-              plugin.name,
-              resolveLocalizedText(plugin.description, i18n.language),
-            ]
+            [plugin.name, resolveLocalizedText(plugin.description, language)]
               .filter(Boolean)
               .join(' · ')
           )
@@ -182,7 +177,7 @@ export function ChannelProviderPicker(props: ChannelProviderPickerProps) {
     )
   }, [
     filter,
-    i18n.language,
+    language,
     keyword,
     props.isCreating,
     props.canBindPlugin,

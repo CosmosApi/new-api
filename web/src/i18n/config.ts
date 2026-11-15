@@ -20,7 +20,7 @@ import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 
-import { convertDetectedLanguage } from './languages'
+import { convertDetectedLanguage, toIntlLocale } from './languages'
 import en from './locales/en.json'
 import fr from './locales/fr.json'
 import ja from './locales/ja.json'
@@ -60,5 +60,22 @@ i18n
       convertDetectedLanguage,
     },
   })
+
+/**
+ * Keep `<html lang>` in step with the interface language. The document ships
+ * as `lang="en"`, which makes the browser pick Latin-first font fallbacks and
+ * tell screen readers the wrong language; the CSS font stacks list CJK faces
+ * after the Latin ones and only get chosen when the element declares a CJK
+ * language. Marks the document dirty when the code is not a valid BCP-47 tag.
+ */
+export function applyDocumentLanguage(language: string) {
+  if (typeof document === 'undefined') return
+  const tag = toIntlLocale(language) ?? 'en'
+  document.documentElement.lang = tag
+  document.documentElement.dataset.lang = language
+}
+
+applyDocumentLanguage(i18n.language)
+i18n.on('languageChanged', applyDocumentLanguage)
 
 export default i18n

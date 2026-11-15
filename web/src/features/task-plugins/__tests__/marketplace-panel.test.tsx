@@ -22,11 +22,10 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { MarketplacePanel } from '../components/marketplace-panel'
-import {
-  DEFAULT_MARKETPLACE_INDEX_URL,
-  GITHUB_MARKETPLACE_INDEX_URL,
-} from '../lib/marketplace'
 import type { MarketplaceIndex, MarketplaceSource } from '../types'
+
+const DEFAULT_MARKETPLACE_INDEX_URL = 'https://catalog.example/index.json'
+const GITHUB_MARKETPLACE_INDEX_URL = 'https://mirror.example/index.json'
 
 vi.mock('../components/marketplace-install-dialog', () => ({
   MarketplaceInstallDialog: () => null,

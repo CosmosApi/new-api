@@ -30,6 +30,15 @@ vi.mock('@lobehub/icons/es/Mistral/components/Color.js', () => {
 })
 
 describe('Lobe icons', () => {
+  it('offers the PicoAPI mark without the upstream brand in the icon catalog', () => {
+    expect(getLobeIconNames()).toContain('PicoAPI')
+    expect(getLobeIconNames()).not.toContain('NewAPI')
+    render(getLobeIcon('PicoAPI', 24))
+    expect(screen.getByRole('presentation', { hidden: true })).toHaveAttribute(
+      'src',
+      '/pico-mark.svg'
+    )
+  })
   it.each([
     '/build/web/node_modules/@lobehub/icons/es/',
     'D:\\a\\new-api\\web\\node_modules\\@lobehub\\icons\\es\\',

@@ -1,0 +1,370 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+/* PicoAPI shared surfaces. Brand orange remains the primary action color;
+   quiet cyan appears only in supporting highlights. */
+:root {
+  --pico-cyan: #5baeb5;
+  --pico-ink: #0d1627;
+  --pico-surface-shadow: 0 4px 18px -12px rgb(13 22 39 / 12%);
+}
+
+.dark {
+  --pico-cyan: #81cbd0;
+  --pico-surface-shadow: 0 6px 22px -12px rgb(0 0 0 / 35%);
+}
+
+.pico-public {
+  isolation: isolate;
+}
+
+.pico-dot-field {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pico-eyebrow {
+  border-color: color-mix(in oklch, var(--pico-cyan) 26%, transparent);
+  color: color-mix(in oklch, var(--pico-cyan) 88%, var(--foreground));
+  background: color-mix(in oklch, var(--card) 85%, transparent);
+}
+
+.pico-eyebrow-dot {
+  background: var(--pico-cyan);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--pico-cyan) 12%, transparent);
+}
+
+/* Auth pages reuse the signal-field language at a quieter volume. */
+.pico-auth {
+  isolation: isolate;
+  background-color: var(--background);
+}
+
+.pico-auth::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 16% 18%,
+      color-mix(in oklch, var(--pico-cyan) 11%, transparent),
+      transparent 46%
+    ),
+    radial-gradient(
+      ellipse at 82% 72%,
+      color-mix(in oklch, var(--primary) 7%, transparent),
+      transparent 52%
+    );
+}
+
+.pico-auth-panel {
+  border-right: 1px solid
+    color-mix(in oklch, var(--border) 65%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--card) 55%, transparent),
+    transparent 62%
+  );
+}
+
+.pico-auth-disc {
+  background-image: radial-gradient(
+    color-mix(in oklch, var(--foreground) 24%, transparent) 0.6px,
+    transparent 0.7px
+  );
+  background-size: 11px 11px;
+  mask-image: radial-gradient(circle, #000 40%, transparent 70%);
+  opacity: 0.65;
+}
+
+.pico-auth-ring {
+  border-color: color-mix(in oklch, var(--primary) 38%, transparent);
+  transform: rotate(12deg);
+}
+
+.pico-auth-core {
+  background: var(--primary);
+  box-shadow:
+    0 0 0 7px color-mix(in oklch, var(--primary) 8%, transparent),
+    0 0 34px 8px color-mix(in oklch, var(--primary) 28%, transparent);
+  animation: pico-auth-pulse 3.6s ease-in-out infinite;
+}
+
+.pico-mark-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pico-mark-dot 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pico-auth-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.85;
+  }
+}
+
+@keyframes pico-mark-dot {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pico-auth-core,
+  .pico-mark-dot {
+    animation: none;
+  }
+}
+
+/* ── 全息边框固定导航栏（Holographic Border Nav）──
+ * 固定在顶部的全宽导航栏，上下双渐变边框，强烈科技感
+ * 浅色：蓝绿渐变边框
+ * 深色：紫色渐变边框 + 发光效果 */
+
+.pico-public-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+.pico-public-header .pico-public-nav {
+  position: relative;
+  width: 100%;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(1.2);
+  border: none;
+  border-radius: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 顶部渐变线 - 浅色模式 */
+.pico-public-header .pico-public-nav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ff9a62 15%,
+    #ff7f3e 35%,
+    #e86e30 50%,
+    #ff7f3e 65%,
+    #ff9a62 85%,
+    transparent 100%
+  );
+}
+
+/* 底部渐变线 - 浅色模式 */
+.pico-public-header .pico-public-nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ff9a62 15%,
+    #ff7f3e 35%,
+    #e86e30 50%,
+    #ff7f3e 65%,
+    #ff9a62 85%,
+    transparent 100%
+  );
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+}
+
+/* 深色模式 */
+.dark .pico-public-header .pico-public-nav {
+  background: rgba(13, 17, 23, 0.9);
+}
+
+/* 顶部渐变线 - 深色模式 */
+.dark .pico-public-header .pico-public-nav::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #ffb088 15%,
+    #ff9a5c 35%,
+    #ff7f3e 50%,
+    #ff9a5c 65%,
+    #ffb088 85%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 8px rgba(139, 127, 245, 0.6));
+}
+
+/* 底部渐变线 - 深色模式 */
+.dark .pico-public-header .pico-public-nav::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #8b7ff5 15%,
+    #a78bfa 35%,
+    #c084fc 50%,
+    #a78bfa 65%,
+    #8b7ff5 85%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 6px rgba(139, 127, 245, 0.4));
+}
+
+/* 滚动时底部线增强 */
+.pico-public-header .pico-public-nav[data-scrolled='true']::after {
+  opacity: 1;
+}
+
+/* 滚动时添加阴影 */
+.pico-public-header .pico-public-nav[data-scrolled='true'] {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.dark .pico-public-header .pico-public-nav[data-scrolled='true'] {
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.4),
+    0 0 60px -20px rgba(139, 127, 245, 0.3);
+}
+
+.pico-public-header a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+}
+
+/* ── Theme reveal ──
+ * A theme switch is a page-wide change, so it is animated as one: the new
+ * theme is painted into a snapshot that is revealed by a circle growing out
+ * of the switch. The clip lives only in the keyframes, so any other view
+ * transition on the app is left alone. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-old(root) {
+    z-index: 1;
+  }
+
+  ::view-transition-new(root) {
+    z-index: 2;
+  }
+
+  @keyframes pico-theme-reveal {
+    from {
+      clip-path: circle(0px at var(--pico-theme-x, 50%) var(--pico-theme-y, 0%));
+    }
+    to {
+      clip-path: circle(var(--pico-theme-reveal, 150vmax) at var(--pico-theme-x, 50%)
+        var(--pico-theme-y, 0%));
+    }
+  }
+
+  html[data-theme-transition='running']::view-transition-new(root) {
+    animation: pico-theme-reveal 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+.pico-public [data-slot='input'] {
+  background-color: color-mix(in oklch, var(--card) 90%, transparent);
+  box-shadow: var(--pico-surface-shadow);
+}
+
+.pico-model-card {
+  position: relative;
+  background-image: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--card) 98%, var(--pico-cyan)),
+    var(--card) 60%
+  );
+}
+
+.pico-model-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 24px auto;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary),
+    var(--pico-cyan),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 180ms ease;
+  pointer-events: none;
+}
+
+.pico-model-card:hover::before,
+.pico-model-card:focus-within::before {
+  opacity: 0.8;
+}
+
+.pico-model-card:focus-within {
+  outline: 2px solid color-mix(in oklch, var(--ring) 50%, transparent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='button'] {
+    transition-duration: 160ms;
+  }
+
+  [data-slot='button'].bg-primary:hover:not(:disabled) {
+    filter: brightness(1.04);
+    box-shadow: 0 4px 15px -7px
+      color-mix(in oklch, var(--primary) 65%, transparent);
+  }
+
+  .pico-model-card:hover {
+    box-shadow: 0 10px 28px -16px
+      color-mix(in oklch, var(--primary) 35%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pico-public-header *,
+  .pico-model-card,
+  .pico-model-card::before,
+  [data-slot='button'],
+  [data-slot='tabs-trigger'] {
+    transition: none !important;
+  }
+}

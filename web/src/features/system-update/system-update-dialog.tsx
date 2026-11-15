@@ -57,7 +57,9 @@ export function SystemUpdateDialog(props: SystemUpdateDialogProps) {
       (parseSystemVersion(release.tag_name)?.stage ?? 3) < 3)
   const canIgnore = release && (update.hasUpdate || update.comparison === null)
   let statusText = t('Updates have not been checked yet.')
-  if (update.checking) {
+  if (!update.configured) {
+    statusText = t('No update source configured.')
+  } else if (update.checking) {
     statusText = t('Checking updates...')
   } else if (release) {
     if (update.isIgnored) {
@@ -100,7 +102,7 @@ export function SystemUpdateDialog(props: SystemUpdateDialogProps) {
           <Button
             type='button'
             variant='outline'
-            disabled={update.checking || !update.online}
+            disabled={!update.configured || update.checking || !update.online}
             onClick={() => void update.checkNow()}
           >
             {update.checking ? t('Checking updates...') : t('Check again')}
@@ -117,7 +119,7 @@ export function SystemUpdateDialog(props: SystemUpdateDialogProps) {
                 />
               }
             >
-              {t('Go to GitHub')}
+              {t('View release')}
             </Button>
           )}
         </>

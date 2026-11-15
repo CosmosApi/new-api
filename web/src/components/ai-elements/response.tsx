@@ -36,7 +36,7 @@ import {
 import { renderChildren, renderFootnotes } from './response-renderer'
 import type { ResponseProps } from './response-types'
 
-const DEFAULT_PARSER_ID = 'new-api-response'
+const DEFAULT_PARSER_ID = 'picoapi-response'
 const MAX_PARSED_MARKDOWN_CHARS = 20_000
 type MarkdownInstance = ReturnType<typeof getMarkdown>
 
@@ -82,6 +82,7 @@ export const Response = memo((props: ResponseProps) => {
 
   if (parsedContent.bodyNodes.length > 0) {
     if (shouldAnimate) {
+      /* oxlint-disable react/refs -- The streaming renderer reads a committed animation cache; pending data is committed only in the layout effect. */
       const fadeState = fadeStateRef.current
       const suppress =
         fadeState.firstRun && content.length > FADE_HYDRATION_THRESHOLD
@@ -89,6 +90,7 @@ export const Response = memo((props: ResponseProps) => {
       renderedContent = renderChildren(parsedContent.bodyNodes, fadeRun)
       footnotes = renderFootnotes(parsedContent.footnotes, fadeRun)
       stageRun(fadeRun)
+      /* oxlint-enable react/refs */
     } else {
       renderedContent = renderChildren(parsedContent.bodyNodes)
       footnotes = renderFootnotes(parsedContent.footnotes)

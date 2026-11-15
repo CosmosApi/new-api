@@ -31,6 +31,7 @@ import { readCachedStatus, statusQueryOptions } from '@/lib/status-query'
 import { DirectionProvider } from './context/direction-provider'
 import { FontProvider } from './context/font-provider'
 import { ThemeProvider } from './context/theme-provider'
+import { MeteorField } from './features/home/components/brand/meteor-field'
 import './i18n/config'
 // Generated Routes
 import { routeTree } from './routeTree.gen'
@@ -108,6 +109,7 @@ if (!rootElement.innerHTML) {
         <ThemeProvider>
           <FontProvider>
             <DirectionProvider>
+              <MeteorField minimal className='fixed inset-0 pointer-events-none z-50' />
               <RouterProvider router={router} />
             </DirectionProvider>
           </FontProvider>

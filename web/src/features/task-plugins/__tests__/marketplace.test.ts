@@ -23,9 +23,7 @@ import { describe, test } from 'vitest'
 import {
   deriveInstallState,
   findMarketplaceVersion,
-  GITHUB_MARKETPLACE_INDEX_URL,
   indexHasIntegrityHashes,
-  isDefaultMarketplaceSource,
   isStaleFactoryOverride,
   marketplaceBuiltInVersion,
   parseMarketplaceIndex,
@@ -612,19 +610,6 @@ describe('source integrity and trust labels', () => {
 
   test('treats an empty index as unverified rather than trivially verified', () => {
     assert.equal(indexHasIntegrityHashes(index([])), false)
-  })
-
-  test('labels both built-in index URLs as official sources', () => {
-    assert.equal(isDefaultMarketplaceSource(OFFICIAL_INDEX_URL), true)
-    assert.equal(isDefaultMarketplaceSource(` ${OFFICIAL_INDEX_URL} `), true)
-    assert.equal(isDefaultMarketplaceSource(GITHUB_MARKETPLACE_INDEX_URL), true)
-  })
-
-  test('labels any other index URL as third-party', () => {
-    assert.equal(
-      isDefaultMarketplaceSource('https://mirror.example/index.json'),
-      false
-    )
   })
 })
 

@@ -49,6 +49,7 @@ import { SYSTEM_UPDATE_INTERVAL, useSystemUpdate } from '../use-system-update'
 
 const release = {
   tag_name: 'v1.0.0-rc.36',
+  html_url: 'https://updates.example/releases/v1.0.0-rc.36',
   draft: false,
   prerelease: true,
   published_at: '2026-09-08T13:01:00Z',
@@ -73,6 +74,10 @@ function respondWithRelease(tag = release.tag_name): void {
 }
 
 beforeEach(() => {
+  vi.stubEnv(
+    'VITE_SYSTEM_RELEASES_URL',
+    'https://updates.example/releases.json'
+  )
   localStorage.clear()
   useSystemUpdateStore.setState({ snapshot: null })
   useSystemUpdatePreferencesStore.setState({ ignoredVersionsByUserId: {} })
@@ -102,10 +107,34 @@ afterEach(() => {
   onlineManager.setOnline(true)
   vi.useRealTimers()
   vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
   vi.restoreAllMocks()
 })
 
 describe('administrator update entry', () => {
+  test('without an update source, never fetches or displays a cached upstream release', async () => {
+    vi.stubEnv('VITE_SYSTEM_RELEASES_URL', '')
+    useSystemUpdateStore.setState({
+      snapshot: {
+        release,
+        lastCheckedAt: Date.now(),
+        lastAttemptAt: Date.now(),
+        error: null,
+      },
+    })
+    const user = userEvent.setup()
+    render(<SystemUpdateAction />, { wrapper: Wrapper })
+    await user.click(screen.getByRole('button', { name: 'Check for updates' }))
+    expect(
+      await screen.findByText('No update source configured.')
+    ).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Check again' })).toBeDisabled()
+    expect(
+      screen.queryByRole('link', { name: 'View release' })
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText(release.body)).not.toBeInTheDocument()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
   test.each([null, ROLE.USER])(
     'hides the entry and makes no release request for role %s',
     (role) => {
@@ -136,9 +165,7 @@ describe('administrator update entry', () => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
       expect(fetchMock).toHaveBeenCalledTimes(1)
       const [url, options] = fetchMock.mock.calls[0]
-      expect(String(url)).toBe(
-        'https://api.github.com/repos/QuantumNous/new-api/releases?per_page=100'
-      )
+      expect(String(url)).toBe('https://updates.example/releases.json')
       expect(options?.credentials).toBe('omit')
       expect(options?.headers).toEqual({
         Accept: 'application/vnd.github+json',
@@ -187,11 +214,8 @@ describe('administrator update entry', () => {
       within(dialog).queryByText('Last successful check')
     ).not.toBeInTheDocument()
     expect(
-      within(dialog).getByRole('link', { name: 'Go to GitHub' })
-    ).toHaveAttribute(
-      'href',
-      'https://github.com/QuantumNous/new-api/releases/tag/v1.0.0-rc.36'
-    )
+      within(dialog).getByRole('link', { name: 'View release' })
+    ).toHaveAttribute('href', 'https://updates.example/releases/v1.0.0-rc.36')
     await user.keyboard('{Escape}')
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
@@ -257,7 +281,7 @@ describe('administrator update entry', () => {
       const dialog = screen.getByRole('dialog')
       expect(within(dialog).getByText('Unknown version')).toBeInTheDocument()
       expect(
-        await within(dialog).findByRole('link', { name: 'Go to GitHub' })
+        await within(dialog).findByRole('link', { name: 'View release' })
       ).toBeInTheDocument()
       expect(
         within(dialog).queryByText('Unable to compare versions')
@@ -311,7 +335,7 @@ describe('administrator update entry', () => {
       )
     }
     expect(
-      within(dialog).getByRole('link', { name: 'Go to GitHub' })
+      within(dialog).getByRole('link', { name: 'View release' })
     ).toBeInTheDocument()
     await user.keyboard('{Escape}')
     await waitFor(() =>
@@ -631,10 +655,10 @@ describe('update cache and scheduling', () => {
     await waitFor(() => expect(first.result.current.hasUpdate).toBe(true))
     first.unmount()
     client.clear()
-    const saved = localStorage.getItem('system-update:v1')
+    const saved = localStorage.getItem('picoapi:system-update:v1')
     expect(saved).not.toBeNull()
     useSystemUpdateStore.setState({ snapshot: null })
-    localStorage.setItem('system-update:v1', String(saved))
+    localStorage.setItem('picoapi:system-update:v1', String(saved))
     await useSystemUpdateStore.persist.rehydrate()
     client = createAppQueryClient()
     client.setQueryData(STATUS_QUERY_KEY, { version: 'v1.0.0-rc.35' })
@@ -647,11 +671,11 @@ describe('update cache and scheduling', () => {
     'keeps checking when persisted storage is %s',
     async (state) => {
       if (state === 'corrupt') {
-        localStorage.setItem('system-update:v1', '{bad json')
+        localStorage.setItem('picoapi:system-update:v1', '{bad json')
         await useSystemUpdateStore.persist.rehydrate()
       } else if (state === 'future') {
         localStorage.setItem(
-          'system-update:v1',
+          'picoapi:system-update:v1',
           JSON.stringify({
             state: {
               snapshot: {

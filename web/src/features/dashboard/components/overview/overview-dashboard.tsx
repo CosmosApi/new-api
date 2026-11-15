@@ -41,6 +41,7 @@ import { useId, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
+import { PicoMark } from '@/components/brand/pico-mark'
 import { SectionPageLayout } from '@/components/layout'
 import {
   CardStaggerContainer,
@@ -646,11 +647,36 @@ export function OverviewDashboard() {
         )}
       </SectionPageLayout.Actions>
       <SectionPageLayout.Content>
-        <div className='flex flex-col gap-4'>
+        <div className='pico-overview flex flex-col gap-4'>
+          <div className='pico-workspace-welcome'>
+            <div className='relative z-10 min-w-0'>
+              <p className='text-muted-foreground mb-2 font-mono text-[10px] tracking-[0.16em] uppercase'>
+                PicoAPI / {t('Console')}
+              </p>
+              <p className='text-xl font-semibold tracking-tight sm:text-2xl'>
+                {t('Your API workspace')}
+              </p>
+              <p className='text-muted-foreground mt-2 max-w-md text-xs leading-relaxed sm:text-sm'>
+                {t('Balance, traffic, and service health, together.')}
+              </p>
+            </div>
+            <div className='pico-workspace-orbit' aria-hidden='true'>
+              <span className='pico-orbit-track pico-orbit-track-outer' />
+              <span className='pico-orbit-track pico-orbit-track-inner' />
+              <span className='pico-orbit-dot' />
+              <PicoMark
+                animated={false}
+                className='relative size-16 -rotate-12 sm:size-20'
+              />
+            </div>
+          </div>
+
+          <SummaryCards />
+
           <div id={setupGuideId} hidden={!setupGuideExpanded}>
             {setupGuideExpanded && (
               <CardStaggerContainer className='grid items-stretch gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]'>
-                <CardStaggerItem className='bg-card h-full overflow-hidden rounded-2xl border shadow-xs'>
+                <CardStaggerItem className='pico-console-panel bg-card h-full overflow-hidden rounded-2xl border shadow-xs'>
                   <div className='relative h-full overflow-hidden p-4 sm:p-5'>
                     <SetupGuideBackdrop />
                     <div className='relative grid gap-5 lg:grid-cols-[minmax(0,1fr)_21rem]'>
@@ -711,7 +737,7 @@ export function OverviewDashboard() {
                   </div>
                 </CardStaggerItem>
 
-                <CardStaggerItem className='bg-card h-full rounded-2xl border p-4 shadow-xs sm:p-5'>
+                <CardStaggerItem className='pico-console-panel bg-card h-full rounded-2xl border p-4 shadow-xs sm:p-5'>
                   <div className='flex h-full flex-col gap-4'>
                     <div className='flex flex-col gap-1'>
                       <div className='text-muted-foreground text-xs font-medium tracking-wider uppercase'>
@@ -786,8 +812,6 @@ export function OverviewDashboard() {
               </CardStaggerItem>
             </CardStaggerContainer>
           )}
-
-          <SummaryCards />
 
           {showContentPanels && (
             <CardStaggerContainer

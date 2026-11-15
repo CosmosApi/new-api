@@ -1,8 +1,10 @@
 <div align="center">
 
-![new-api](/web/public/logo.png)
+![PicoAPI](/web/public/logo.png)
 
-# New API
+# PicoAPI
+
+PicoAPI 基於 [New API](https://github.com/QuantumNous/new-api) 修改。品牌和本機建置調整於 2026-11-12。
 
 **連接模型、應用程式與 Agent 的 AI 閘道**
 
@@ -56,7 +58,7 @@
 
 ## 📝 項目說明
 
-New API 是面向應用程式、Agent 和團隊的自託管 AI 閘道。將不同供應商的模型服務接入統一入口，在同一套控制台中管理渠道、存取權限、用量與成本。
+PicoAPI 是面向應用程式、Agent 和團隊的自託管 AI 閘道。將不同供應商的模型服務接入統一入口，在同一套控制台中管理渠道、存取權限、用量與成本。
 
 你可以用它為團隊分配已授權的模型資源，在切換上游時減少用戶端改動，或建置自己的多模型服務。支援接入 OpenAI、Anthropic、Google Gemini、Azure OpenAI、AWS Bedrock、Vertex AI、DeepSeek、通義千問及其他相容服務。
 
@@ -151,12 +153,13 @@ New API 是面向應用程式、Agent 和團隊的自託管 AI 閘道。將不�
 以下指令使用 SQLite 啟動單一執行個體，僅監聽本機連接埠：
 
 ```bash
+docker build -t picoapi:local .
 mkdir -p data
-docker run --name new-api -d --restart unless-stopped \
+docker run --name picoapi -d --restart unless-stopped \
   -p 127.0.0.1:3000:3000 \
   -e TZ=Asia/Shanghai \
   -v "$(pwd)/data:/data" \
-  calciumion/new-api:latest
+  picoapi:local
 ```
 
 開啟 [http://localhost:3000](http://localhost:3000)，依初始化精靈建立管理員帳號。SQLite 資料庫存放在掛載的 `data` 目錄中，更換容器後仍會保留。
@@ -166,20 +169,20 @@ docker run --name new-api -d --restart unless-stopped \
 1. 新增渠道，填寫上游 API Key、可用模型和所屬群組，執行渠道測試。
 2. 設定模型價格，確保呼叫使用者有可用額度或有效訂閱。
 3. 在控制台建立 API Key，確保它能存取對應群組和模型。
-4. 對於 OpenAI 相容用戶端，將 Base URL 設為 `http://localhost:3000/v1`，金鑰使用 **New API 簽發的 Key**。
+4. 對於 OpenAI 相容用戶端，將 Base URL 設為 `http://localhost:3000/v1`，金鑰使用 **PicoAPI 簽發的 Key**。
 
-在終端機中將 `NEW_API_KEY` 環境變數設為該金鑰，查詢它可以存取的模型：
+在終端機中將 `PICOAPI_KEY` 環境變數設為該金鑰，查詢它可以存取的模型：
 
 ```bash
 curl --fail-with-body http://localhost:3000/v1/models \
-  -H "Authorization: Bearer ${NEW_API_KEY}"
+  -H "Authorization: Bearer ${PICOAPI_KEY}"
 ```
 
 然後呼叫 Responses，將 `your-enabled-model` 替換為已啟用且支援該介面的模型名稱：
 
 ```bash
 curl --fail-with-body http://localhost:3000/v1/responses \
-  -H "Authorization: Bearer ${NEW_API_KEY}" \
+  -H "Authorization: Bearer ${PICOAPI_KEY}" \
   -H "Content-Type: application/json" \
   -d '{"model":"your-enabled-model","input":"Hello!"}'
 ```
@@ -190,17 +193,16 @@ curl --fail-with-body http://localhost:3000/v1/responses \
 
 ### Docker Compose
 
-儲存庫的 [Compose 設定](./docker-compose.yml) 預設啟動 **New API + PostgreSQL + Redis**，並提供 MySQL 和獨立 ClickHouse 日誌資料庫的設定範例。
+儲存庫的 [Compose 設定](./docker-compose.yml) 預設啟動 **PicoAPI + PostgreSQL + Redis**，並提供 MySQL 和獨立 ClickHouse 日誌資料庫的設定範例。
 
 ```bash
-git clone https://github.com/QuantumNous/new-api.git
-cd new-api
+cd /path/to/your/checkout
 ```
 
 啟動前編輯 `docker-compose.yml`：同時替換資料庫、Redis 服務及對應連線字串中的範例密碼，並設定固定的隨機 `SESSION_SECRET`（可用 `openssl rand -hex 32` 產生）。透過 HTTPS 存取控制台時，設定 `SESSION_COOKIE_SECURE=true`，並在 `SESSION_COOKIE_TRUSTED_URL` 中填寫控制台對外的精確 HTTPS Origin。
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 docker compose logs -f new-api
 ```
 
@@ -302,20 +304,6 @@ bun run dev -- --port 5173
 
 ---
 
-## 📜 許可證
-
-本項目採用 [GNU Affero 通用公共許可證 v3.0 (AGPLv3)](./LICENSE) 授權。
-
-依據 AGPLv3 第 7 條，本專案另適用[附加條款](./NOTICE)。修改版本必須在適當法律聲明及介面中顯著的關於、法律、頁尾或署名位置保留作者署名 `Frontend design and development by New API contributors.`，並保留指向原專案 <https://github.com/QuantumNous/new-api> 的可見連結。
-
-本項目為開源項目，在 [One API](https://github.com/songquanpeng/one-api)（MIT 許可證）的基礎上進行二次開發。
-
-如果您所在的組織政策不允許使用 AGPLv3 許可的軟體，或您希望規避 AGPLv3 的開源義務，請發送郵件至：[support@quantumnous.com](mailto:support@quantumnous.com)
-
-署名及相依套件聲明見 [NOTICE](./NOTICE) 和[第三方授權條款](./THIRD-PARTY-LICENSES.md)。
-
----
-
 ## 🌟 Star History
 
 <div align="center">
@@ -328,7 +316,7 @@ bun run dev -- --port 5173
 
 <div align="center">
 
-### 💖 感謝使用 New API
+### 💖 感謝使用 PicoAPI
 
 如果這個項目對你有幫助，歡迎給我們一個 ⭐️ Star！
 

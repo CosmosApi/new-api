@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="512" height="512" role="img" aria-label="PicoAPI">
+  <defs>
+    <radialGradient id="pico-dot" cx="38%" cy="32%" r="72%">
+      <stop offset="0%" stop-color="#E98A66"/>
+      <stop offset="100%" stop-color="#D97757"/>
+    </radialGradient>
+  </defs>
+  <circle cx="60" cy="60" r="59" fill="#F0EEE6"/>
+  <circle cx="60" cy="60" r="57.5" fill="none" stroke="#141413" stroke-opacity="0.08" stroke-width="1"/>
+  <path d="M30 52V98" fill="none" stroke="#141413" stroke-width="16.5" stroke-linecap="round"/>
+  <circle cx="60" cy="52" r="30" fill="none" stroke="#141413" stroke-width="16.5"/>
+  <circle cx="60" cy="52" r="11" fill="url(#pico-dot)"/>
+</svg>

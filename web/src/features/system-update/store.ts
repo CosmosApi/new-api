@@ -31,7 +31,9 @@ const updateSnapshotSchema = z
     release: systemReleaseSchema.nullable(),
     lastCheckedAt: z.number().finite().nonnegative(),
     lastAttemptAt: z.number().finite().nonnegative(),
-    error: z.enum(['network', 'rate-limit', 'timeout', 'payload']).nullable(),
+    error: z
+      .enum(['unconfigured', 'network', 'rate-limit', 'timeout', 'payload'])
+      .nullable(),
   })
   .refine(
     (snapshot) =>
@@ -78,7 +80,7 @@ export const useSystemUpdateStore = create<SystemUpdateStore>()(
       setSnapshot: (snapshot) => set({ snapshot }),
     }),
     {
-      name: 'system-update:v1',
+      name: 'picoapi:system-update:v1',
       storage: createJSONStorage(() => updateStorage),
       partialize: (state) => ({ snapshot: state.snapshot }),
       merge: (persisted, current) => {

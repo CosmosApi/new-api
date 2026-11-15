@@ -20,7 +20,7 @@ import { describe, expect, test } from 'vitest'
 
 import type { TaskPluginOption } from '../../api'
 import {
-  CHANNEL_TYPE_NEW_API,
+  CHANNEL_TYPE_PICO_API,
   CHANNEL_TYPE_VLLM,
   CHANNEL_TYPE_SGLANG,
   CHANNEL_TYPE_OPTIONS,
@@ -36,7 +36,7 @@ import {
 import {
   getChannelPluginExtensions,
   readTaskExtendPluginKeys,
-  supportsNewAPIUpstream,
+  supportsPicoAPIUpstream,
 } from '../channel-plugin-extensions'
 import { getChannelTypeConfig } from '../channel-type-config'
 import { getChannelTypeIcon, getKeyPromptForType } from '../channel-utils'
@@ -44,35 +44,35 @@ import { getChannelTypeIcon, getKeyPromptForType } from '../channel-utils'
 function newAPIForm(baseUrl: string) {
   return {
     ...CHANNEL_FORM_DEFAULT_VALUES,
-    name: 'New API upstream',
-    type: CHANNEL_TYPE_NEW_API,
+    name: 'PicoAPI upstream',
+    type: CHANNEL_TYPE_PICO_API,
     base_url: baseUrl,
     key: 'test-key',
     models: 'gpt-5',
   }
 }
 
-describe('New API channel', () => {
+describe('PicoAPI channel', () => {
   test('registers selection, ordering, model discovery, and icon metadata', () => {
     const option = CHANNEL_TYPE_OPTIONS.find(
-      (item) => item.value === CHANNEL_TYPE_NEW_API
+      (item) => item.value === CHANNEL_TYPE_PICO_API
     )
 
     expect(option).toEqual({
-      value: CHANNEL_TYPE_NEW_API,
-      label: 'New API',
+      value: CHANNEL_TYPE_PICO_API,
+      label: 'PicoAPI',
     })
     expect(
       CHANNEL_TYPE_OPTIONS.findIndex(
-        (item) => item.value === CHANNEL_TYPE_NEW_API
+        (item) => item.value === CHANNEL_TYPE_PICO_API
       ) + 1
     ).toBe(CHANNEL_TYPE_OPTIONS.findIndex((item) => item.value === 58))
-    expect(MODEL_FETCHABLE_TYPES.has(CHANNEL_TYPE_NEW_API)).toBe(true)
-    expect(getChannelTypeIcon(CHANNEL_TYPE_NEW_API)).toBe('NewAPI')
-    expect(getKeyPromptForType(CHANNEL_TYPE_NEW_API)).toBe(
+    expect(MODEL_FETCHABLE_TYPES.has(CHANNEL_TYPE_PICO_API)).toBe(true)
+    expect(getChannelTypeIcon(CHANNEL_TYPE_PICO_API)).toBe('PicoAPI')
+    expect(getKeyPromptForType(CHANNEL_TYPE_PICO_API)).toBe(
       'Enter API key for this channel'
     )
-    expect(getChannelTypeConfig(CHANNEL_TYPE_NEW_API).icon).toBe('NewAPI')
+    expect(getChannelTypeConfig(CHANNEL_TYPE_PICO_API).icon).toBe('PicoAPI')
   })
 
   test('requires a non-blank Base URL', () => {
@@ -154,7 +154,7 @@ describe.each([
   })
 })
 
-describe('New API channel task plugin extensions', () => {
+describe('PicoAPI channel task plugin extensions', () => {
   const plugins: TaskPluginOption[] = [
     {
       key: 'doubao',
@@ -177,23 +177,23 @@ describe('New API channel task plugin extensions', () => {
     },
   ]
 
-  test('only plugins declaring a New API upstream can be bound to a New API channel', () => {
-    expect(plugins.filter(supportsNewAPIUpstream).map((p) => p.key)).toEqual([
+  test('only plugins declaring a PicoAPI upstream can be bound to a PicoAPI channel', () => {
+    expect(plugins.filter(supportsPicoAPIUpstream).map((p) => p.key)).toEqual([
       'doubao',
       'kling',
     ])
-    expect(supportsNewAPIUpstream({ upstreams: null })).toBe(false)
-    expect(supportsNewAPIUpstream({})).toBe(false)
+    expect(supportsPicoAPIUpstream({ upstreams: null })).toBe(false)
+    expect(supportsPicoAPIUpstream({})).toBe(false)
   })
 
-  test('reads the extension list together with a single key on New API channels only', () => {
+  test('reads the extension list together with a single key on PicoAPI channels only', () => {
     expect(
-      readTaskExtendPluginKeys(CHANNEL_TYPE_NEW_API, {
+      readTaskExtendPluginKeys(CHANNEL_TYPE_PICO_API, {
         task_plugin_key: 'kling',
         task_extend_plugin_keys: ['doubao', 'kling', '', 'doubao'],
       })
     ).toEqual(['kling', 'doubao'])
-    expect(readTaskExtendPluginKeys(CHANNEL_TYPE_NEW_API, {})).toEqual([])
+    expect(readTaskExtendPluginKeys(CHANNEL_TYPE_PICO_API, {})).toEqual([])
     expect(
       readTaskExtendPluginKeys(1, { task_extend_plugin_keys: ['doubao'] })
     ).toEqual([])
@@ -201,9 +201,9 @@ describe('New API channel task plugin extensions', () => {
 
   test('lists only bound plugins as extensions while other types keep declared channel types', () => {
     expect(
-      getChannelPluginExtensions(CHANNEL_TYPE_NEW_API, plugins, ['kling'])
+      getChannelPluginExtensions(CHANNEL_TYPE_PICO_API, plugins, ['kling'])
     ).toEqual([plugins[1]])
-    expect(getChannelPluginExtensions(CHANNEL_TYPE_NEW_API, plugins)).toEqual(
+    expect(getChannelPluginExtensions(CHANNEL_TYPE_PICO_API, plugins)).toEqual(
       []
     )
     expect(getChannelPluginExtensions(45, plugins, ['kling'])).toEqual([
@@ -211,11 +211,11 @@ describe('New API channel task plugin extensions', () => {
     ])
   })
 
-  test('round-trips bound plugins through the channel setting for New API channels only', () => {
+  test('round-trips bound plugins through the channel setting for PicoAPI channels only', () => {
     const channel = channelSchema.parse({
       id: 7,
       name: 'Gateway',
-      type: CHANNEL_TYPE_NEW_API,
+      type: CHANNEL_TYPE_PICO_API,
       key: '',
       status: 1,
       created_time: 1,

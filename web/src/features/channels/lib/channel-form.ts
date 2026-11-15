@@ -20,7 +20,7 @@ import { z } from 'zod'
 
 import {
   CLAUDE_FIELD_PASSTHROUGH_TYPES,
-  CHANNEL_TYPE_NEW_API,
+  CHANNEL_TYPE_PICO_API,
   CHANNEL_TYPE_OLLAMA,
   CHANNEL_TYPE_TASK_PLUGIN,
   CHANNEL_TYPE_VLLM,
@@ -303,7 +303,7 @@ export const channelFormSchema = z
         8,
         36,
         45,
-        CHANNEL_TYPE_NEW_API,
+        CHANNEL_TYPE_PICO_API,
         CHANNEL_TYPE_TASK_PLUGIN,
         CHANNEL_TYPE_VLLM,
         CHANNEL_TYPE_SGLANG,
@@ -663,7 +663,7 @@ export function buildSettingJSON(formData: ChannelFormValues): string {
         ? formData.task_plugin_key?.trim() || ''
         : undefined,
     task_extend_plugin_keys:
-      formData.type === CHANNEL_TYPE_NEW_API &&
+      formData.type === CHANNEL_TYPE_PICO_API &&
       formData.task_extend_plugin_keys?.length
         ? formData.task_extend_plugin_keys
         : undefined,
@@ -751,9 +751,9 @@ function buildSettingsJSON(formData: ChannelFormValues): string {
   }
 
   // Field passthrough controls:
-  // - OpenAI, Anthropic, Codex, and New API: allow_service_tier
-  // - OpenAI request fields: OpenAI, Codex, and New API
-  // - Claude request fields: Anthropic and New API
+  // - OpenAI, Anthropic, Codex, and PicoAPI: allow_service_tier
+  // - OpenAI request fields: OpenAI, Codex, and PicoAPI
+  // - Claude request fields: Anthropic and PicoAPI
   if (FIELD_PASSTHROUGH_TYPES.has(formData.type)) {
     settingsObj.allow_service_tier = formData.allow_service_tier === true
   } else if ('allow_service_tier' in settingsObj) {

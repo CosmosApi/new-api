@@ -19,6 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 import { selectLatestRelease, type SystemRelease } from './releases'
 
 export type UpdateCheckErrorCode =
+  | 'unconfigured'
   | 'network'
   | 'rate-limit'
   | 'timeout'
@@ -31,9 +32,15 @@ export class UpdateCheckError extends Error {
   }
 }
 
+export function getSystemUpdateSource(): string {
+  return (import.meta.env.VITE_SYSTEM_RELEASES_URL ?? '').trim()
+}
+
 export async function fetchLatestSystemRelease(
   signal: AbortSignal
 ): Promise<SystemRelease | null> {
+  const source = getSystemUpdateSource()
+  if (!source) throw new UpdateCheckError('unconfigured')
   const controller = new AbortController()
   const cancel = () => controller.abort()
   signal.addEventListener('abort', cancel, { once: true })
@@ -41,14 +48,11 @@ export async function fetchLatestSystemRelease(
   const timeout = setTimeout(cancel, 10_000)
 
   try {
-    const response = await fetch(
-      'https://api.github.com/repos/QuantumNous/new-api/releases?per_page=100',
-      {
-        credentials: 'omit',
-        headers: { Accept: 'application/vnd.github+json' },
-        signal: controller.signal,
-      }
-    )
+    const response = await fetch(source, {
+      credentials: 'omit',
+      headers: { Accept: 'application/vnd.github+json' },
+      signal: controller.signal,
+    })
     if (response.status === 403 || response.status === 429) {
       throw new UpdateCheckError('rate-limit')
     }

@@ -16,74 +16,65 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { Settings, Zap, BarChart3 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { AnimateInView } from '@/components/animate-in-view'
 
 export function HowItWorks() {
   const { t } = useTranslation()
-
   const steps = [
     {
-      num: '1',
-      title: t('Configure'),
-      desc: t(
-        'Add your API keys, set up channels and configure access permissions'
-      ),
-      icon: <Settings className='size-6' strokeWidth={1.5} />,
+      title: t('Create your account'),
+      description: t('Sign up and open your PicoAPI console.'),
     },
     {
-      num: '2',
-      title: t('Connect'),
-      desc: t(
-        'Connect through OpenAI, Claude, Gemini, and other compatible API routes'
-      ),
-      icon: <Zap className='size-6' strokeWidth={1.5} />,
+      title: t('Create an API key'),
+      description: t('Choose the models and quota your project needs.'),
     },
     {
-      num: '3',
-      title: t('Monitor'),
-      desc: t('Track usage, costs and performance with real-time analytics'),
-      icon: <BarChart3 className='size-6' strokeWidth={1.5} />,
+      title: t('Send your first request'),
+      description: t(
+        'Add your key and base URL to a compatible SDK or client.'
+      ),
     },
   ]
 
   return (
-    <section className='border-border/40 relative z-10 border-t px-6 py-24 md:py-32'>
-      <div className='mx-auto max-w-6xl'>
-        <AnimateInView className='mb-16 text-center md:mb-20'>
-          <p className='text-muted-foreground mb-3 text-xs font-medium tracking-widest uppercase'>
-            {t('How It Works')}
+    <section className='px-5 pb-20 md:px-8 md:pb-28'>
+      <div className='border-border/70 mx-auto max-w-6xl border-t pt-10'>
+        <AnimateInView className='flex flex-col justify-between gap-3 sm:flex-row sm:items-end'>
+          <div>
+            <p className='pico-home-caption text-primary'>
+              {t('From idea to request')}
+            </p>
+            <h2 className='mt-4 text-2xl font-semibold tracking-tight'>
+              {t('A small setup. A wide open canvas.')}
+            </h2>
+          </div>
+          <p className='text-muted-foreground text-sm'>
+            {t('Three steps to your first connection.')}
           </p>
-          <h2 className='text-2xl font-bold tracking-tight md:text-3xl'>
-            {t('Three steps to get started')}
-          </h2>
         </AnimateInView>
-
-        <div className='grid gap-8 md:grid-cols-3 md:gap-12'>
-          {steps.map((step, i) => (
+        <ol className='pico-home-steps relative mt-10 grid gap-8 md:grid-cols-3 md:gap-10'>
+          {steps.map((step, index) => (
             <AnimateInView
-              key={step.num}
-              delay={i * 150}
-              animation='fade-up'
-              className='relative flex flex-col items-center text-center'
+              key={step.title}
+              as='li'
+              delay={index * 80}
+              className='relative flex gap-4 md:flex-col md:gap-5'
             >
-              <div className='relative mb-6'>
-                <div className='text-muted-foreground border-border/50 bg-muted/30 flex size-16 items-center justify-center rounded-2xl border transition-colors'>
-                  {step.icon}
-                </div>
-                <div className='bg-foreground text-background absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full text-xs font-bold'>
-                  {step.num}
-                </div>
+              <span className='pico-home-step relative z-1 flex size-10 shrink-0 items-center justify-center rounded-full border font-mono text-xs'>
+                0{index + 1}
+              </span>
+              <div>
+                <h3 className='text-sm font-semibold'>{step.title}</h3>
+                <p className='text-muted-foreground mt-2 max-w-[17rem] text-sm leading-6'>
+                  {step.description}
+                </p>
               </div>
-              <h3 className='mb-2 text-base font-semibold'>{step.title}</h3>
-              <p className='text-muted-foreground max-w-[240px] text-sm leading-relaxed'>
-                {step.desc}
-              </p>
             </AnimateInView>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   )

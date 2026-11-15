@@ -107,6 +107,27 @@ async function renderOverview() {
 }
 
 describe('overview setup guide', () => {
+  it('keeps account usage ahead of the expanded guide for a new workspace', async () => {
+    useAuthStore.getState().auth.setUser({
+      id: 1,
+      username: 'new-user',
+      role: 1,
+    })
+    await renderOverview()
+
+    const guideHeading = await screen.findByRole('heading', {
+      name: 'Build on your API gateway in minutes',
+    })
+    const usageHeading = screen.getByRole('heading', {
+      name: 'Usage at a glance',
+    })
+    expect(
+      usageHeading.compareDocumentPosition(guideHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+    expect(screen.getByText('Your API workspace')).toBeVisible()
+  })
+
   it('shows usage first and only a header entry when setup is complete', async () => {
     await renderOverview()
 

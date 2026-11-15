@@ -106,7 +106,7 @@ func TestValidateChannelRequiresNewAPIBaseURL(t *testing.T) {
 			err := validateChannel(channel, false)
 
 			if test.wantErr {
-				require.ErrorContains(t, err, "New API channel base URL cannot be empty")
+				require.ErrorContains(t, err, "PicoAPI channel base URL cannot be empty")
 				return
 			}
 			require.NoError(t, err)

@@ -21,9 +21,12 @@ import { fileURLToPath } from 'node:url'
 
 import { defineConfig } from 'vitest/config'
 
+import { picoIconCatalog } from './config/icon-catalog.ts'
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  define: { __PICOAPI_ICON_CATALOG__: JSON.stringify(picoIconCatalog) },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

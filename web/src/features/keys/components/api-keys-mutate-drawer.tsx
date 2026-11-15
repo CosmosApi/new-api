@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { DateTimePicker } from '@/components/datetime-picker'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/dialog'
 import {
   SideDrawerSection,
   SideDrawerSectionHeader,
@@ -52,14 +53,13 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { RelatedPolicyLink } from '@/features/system-settings/request-policies/related-policy-link'
@@ -371,27 +371,25 @@ export function ApiKeysMutateDrawer({
   const unlimitedQuota = form.watch('unlimited_quota')
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        className={sideDrawerContentClassName('max-w-none sm:!max-w-[620px]')}
-      >
-        <SheetHeader className={sideDrawerHeaderClassName()}>
-          <SheetTitle>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
             {isUpdate ? t('Update API Key') : t('Create API Key')}
-          </SheetTitle>
-          <SheetDescription>
+          </DialogTitle>
+          <DialogDescription>
             {isUpdate
               ? t('Update the API key by providing necessary info.')
               : t('Add a new API key by providing necessary info.')}
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form}>
           <form
             id='api-key-form'
             onSubmit={form.handleSubmit(onSubmit, onInvalid)}
             aria-busy={!isFormInitialized}
             inert={!isFormInitialized || isSubmitting ? true : undefined}
-            className={sideDrawerFormClassName('gap-5')}
+            className="space-y-6"
           >
             <SideDrawerSection>
               <SideDrawerSectionHeader
@@ -519,16 +517,8 @@ export function ApiKeysMutateDrawer({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('Expiration Time')}</FormLabel>
-                    <div className='grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center'>
-                      <FormControl>
-                        <DateTimePicker
-                          value={field.value ?? undefined}
-                          onChange={(date) => field.onChange(date ?? null)}
-                          placeholder={t('Never expires')}
-                          className='min-w-0 [&_input[type=time]]:w-24 sm:[&_input[type=time]]:w-32'
-                        />
-                      </FormControl>
-                      <div className='grid grid-cols-4 gap-2 sm:flex'>
+                    <div className='grid gap-2'>
+                      <div className='grid grid-cols-3 gap-2'>
                         <Button
                           type='button'
                           variant='outline'
@@ -537,15 +527,6 @@ export function ApiKeysMutateDrawer({
                           onClick={() => handleSetExpiry(0, 0, 0)}
                         >
                           {t('Never')}
-                        </Button>
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          className='px-2 text-xs sm:px-3 sm:text-sm'
-                          onClick={() => handleSetExpiry(1, 0, 0)}
-                        >
-                          {t('1 Month')}
                         </Button>
                         <Button
                           type='button'
@@ -561,11 +542,19 @@ export function ApiKeysMutateDrawer({
                           variant='outline'
                           size='sm'
                           className='px-2 text-xs sm:px-3 sm:text-sm'
-                          onClick={() => handleSetExpiry(0, 0, 1)}
+                          onClick={() => handleSetExpiry(0, 7, 0)}
                         >
-                          {t('1 Hour')}
+                          {t('7 Days')}
                         </Button>
                       </div>
+                      <FormControl>
+                        <DateTimePicker
+                          value={field.value ?? undefined}
+                          onChange={(date) => field.onChange(date ?? null)}
+                          placeholder={t('Never expires')}
+                          className='min-w-0 [&_input[type=time]]:w-24 sm:[&_input[type=time]]:w-32'
+                        />
+                      </FormControl>
                     </div>
                     <FormMessage />
                   </FormItem>
@@ -778,12 +767,15 @@ export function ApiKeysMutateDrawer({
             </Collapsible>
           </form>
         </Form>
-        <SheetFooter className={sideDrawerFooterClassName()}>
-          <SheetClose
-            render={<Button variant='outline' className='w-full sm:w-auto' />}
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button
+            type='button'
+            variant='outline'
+            onClick={() => onOpenChange(false)}
+            className='w-full sm:w-auto'
           >
             {t('Close')}
-          </SheetClose>
+          </Button>
           <Button
             type='button'
             onClick={form.handleSubmit(onSubmit, onInvalid)}
@@ -792,8 +784,8 @@ export function ApiKeysMutateDrawer({
           >
             {isSubmitting ? t('Saving...') : t('Save changes')}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

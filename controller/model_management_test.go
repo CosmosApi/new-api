@@ -1068,6 +1068,11 @@ export function parseTaskResult() { return {}; }
 }
 
 func TestMetadataSyncLocaleAndEndpointValidation(t *testing.T) {
+	t.Run("no_default_remote_source", func(t *testing.T) {
+		t.Setenv("SYNC_UPSTREAM_BASE", "")
+		_, _, _, err := fetchMetadataCatalog(nil, "en")
+		require.EqualError(t, err, "No metadata source configured.")
+	})
 	for _, locale := range []struct{ input, expected string }{{"zh", "zh"}, {"zh-CN", "zh"}, {"en", "en"}, {"ja", "ja"}} {
 		t.Run(locale.input, func(t *testing.T) {
 			normalized, ok := normalizeLocale(locale.input)

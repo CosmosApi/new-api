@@ -35,6 +35,7 @@ import { useAuthStore } from '@/stores/auth-store'
 
 import {
   fetchLatestSystemRelease,
+  getSystemUpdateSource,
   UpdateCheckError,
   type UpdateCheckErrorCode,
 } from './api'
@@ -54,6 +55,8 @@ export function getUpdateErrorMessage(
   t: TFunction
 ): string {
   switch (code) {
+    case 'unconfigured':
+      return t('No update source configured.')
     case 'rate-limit':
       return t('GitHub rate limit reached. Try again later.')
     case 'timeout':
@@ -133,13 +136,14 @@ export function useSystemUpdate() {
   const { t } = useTranslation()
   const user = useAuthStore((state) => state.auth.user)
   const isAdmin = (user?.role ?? 0) >= ROLE.ADMIN
+  const configured = Boolean(getSystemUpdateSource())
   const visible = useSyncExternalStore(focusManager.subscribe, isPageVisible)
   const online = useSyncExternalStore(onlineManager.subscribe, isBrowserOnline)
   const { status } = useStatus()
   const queryClient = useQueryClient()
   const query = useQuery({
     ...systemUpdateQueryOptions,
-    enabled: isAdmin && visible && online,
+    enabled: configured && isAdmin && visible && online,
   })
 
   useEffect(() => {
@@ -153,7 +157,7 @@ export function useSystemUpdate() {
     version === 'v0.0.0' || version === '0.0.0'
       ? undefined
       : version || undefined
-  const release = query.data?.release ?? null
+  const release = configured ? (query.data?.release ?? null) : null
   const comparison = compareSystemVersions(currentVersion, release?.tag_name)
   const hasUpdate = comparison === -1
   const isIgnored = useSyncExternalStore(subscribeSystemUpdatePreferences, () =>
@@ -174,7 +178,7 @@ export function useSystemUpdate() {
   }
 
   const checkNow = async () => {
-    if (!isAdmin || !online) return
+    if (!configured || !isAdmin || !online) return
     const result = await query.refetch({ cancelRefetch: false })
     if (result.data?.error) {
       handleServerError(new Error(getUpdateErrorMessage(result.data.error, t)))
@@ -182,6 +186,7 @@ export function useSystemUpdate() {
   }
 
   return {
+    configured,
     currentVersion,
     release,
     comparison,
@@ -191,7 +196,7 @@ export function useSystemUpdate() {
     setIgnored,
     checking: query.isFetching,
     online,
-    snapshot: query.data,
+    snapshot: configured ? query.data : undefined,
     checkNow,
   }
 }

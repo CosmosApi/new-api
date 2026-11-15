@@ -16,11 +16,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { useTranslation } from 'react-i18next'
+
 import { ConfigDrawer } from '@/components/config-drawer'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { NotificationPopover } from '@/components/notification-popover'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
+import { ThemeSwitch } from '@/components/theme-switch'
 import { SystemUpdateAction } from '@/features/system-update/system-update-action'
 import { useNotifications } from '@/hooks/use-notifications'
 import { useTopNavLinks } from '@/hooks/use-top-nav-links'
@@ -84,7 +87,7 @@ type AppHeaderProps = {
   showNotifications?: boolean
   /**
    * Whether to show config drawer
-   * @default true
+   * @default false
    */
   showConfigDrawer?: boolean
   /**
@@ -101,9 +104,10 @@ export function AppHeader({
   showSearch = true,
   rightContent,
   showNotifications = true,
-  showConfigDrawer = true,
+  showConfigDrawer = false,
   showProfileDropdown = true,
 }: AppHeaderProps) {
+  const { t } = useTranslation()
   // Prioritize dynamically generated links from backend
   const dynamicLinks = useTopNavLinks()
   const links = dynamicLinks.length > 0 ? dynamicLinks : navLinks
@@ -112,9 +116,16 @@ export function AppHeader({
   const notifications = useNotifications()
 
   return (
-    <Header>
+    <Header className='pico-console-header'>
       <div className='@container/system-brand flex min-w-0 flex-1 items-center gap-1'>
         <SystemBrand variant='inline' />
+        <span
+          aria-hidden='true'
+          className='pico-header-divider hidden sm:block'
+        />
+        <span className='text-muted-foreground hidden shrink-0 font-mono text-[10px] tracking-[0.12em] uppercase sm:block'>
+          {t('Console')}
+        </span>
         <SystemUpdateAction presentation='version' />
       </div>
 
@@ -123,7 +134,7 @@ export function AppHeader({
       ) : null}
 
       {rightContent ?? (
-        <div className='ms-auto flex shrink-0 items-center gap-1 sm:gap-2'>
+        <div className='flex shrink-0 items-center gap-1 sm:gap-2'>
           {showTopNav && (
             <div className='me-1 hidden lg:block'>
               <TopNav links={links} />
@@ -145,6 +156,7 @@ export function AppHeader({
             />
           )}
           <LanguageSwitcher />
+          <ThemeSwitch />
           {showConfigDrawer && <ConfigDrawer />}
           {showProfileDropdown && <ProfileDropdown />}
         </div>

@@ -1,0 +1,479 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+/* PicoAPI: a warm daisy at the center of a precise, quiet network. */
+.pico-home {
+  --pico-home-cyan: #278b96;
+  --pico-home-ink: #0d1627;
+  --pico-home-petal: #fffdf8;
+}
+
+.dark .pico-home {
+  --pico-home-cyan: #8cd5d8;
+}
+
+.pico-home-hero {
+  isolation: isolate;
+}
+
+.pico-home-atmosphere {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 82% 38%,
+      rgb(91 174 181 / 0.09),
+      transparent 42%
+    ),
+    radial-gradient(ellipse at 54% 16%, rgb(248 118 43 / 0.07), transparent 48%);
+}
+
+.pico-home-eyebrow {
+  border-color: color-mix(in oklch, var(--pico-home-cyan) 23%, transparent);
+  color: var(--pico-home-cyan);
+  background: color-mix(in oklch, var(--card) 85%, transparent);
+}
+
+.pico-home-status-dot {
+  background: var(--pico-home-cyan);
+  box-shadow: 0 0 0 3px
+    color-mix(in oklch, var(--pico-home-cyan) 10%, transparent);
+}
+
+.pico-home-caption {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+
+.pico-home-key {
+  position: relative;
+  color: var(--primary);
+}
+
+.pico-home-key::after {
+  position: absolute;
+  right: -5%;
+  bottom: 0;
+  left: -3%;
+  height: 5px;
+  content: '';
+  border-radius: 100%;
+  background: color-mix(in oklch, var(--primary) 20%, transparent);
+  transform: rotate(-4deg);
+}
+
+.pico-home-primary {
+  box-shadow: 0 8px 24px -12px
+    color-mix(in oklch, var(--primary) 65%, transparent);
+}
+
+.pico-home-capabilities {
+  background: color-mix(in oklch, var(--card) 50%, transparent);
+}
+
+.pico-bloom-frame {
+  border-color: color-mix(in oklch, var(--pico-home-cyan) 20%, var(--border));
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--card) 97%, #8cd5d8 3%),
+    var(--card)
+  );
+  box-shadow:
+    0 20px 70px -38px rgb(13 22 39 / 0.2),
+    0 2px 4px -2px rgb(13 22 39 / 0.04);
+}
+
+.pico-bloom-request {
+  border-color: var(--border);
+  background: color-mix(in oklch, var(--background) 75%, transparent);
+}
+
+.pico-bloom-map {
+  background-image: radial-gradient(
+    color-mix(in oklch, var(--foreground) 13%, transparent) 0.6px,
+    transparent 0.6px
+  );
+  background-size: 18px 18px;
+}
+
+.pico-bloom-orbit {
+  fill: none;
+  stroke: color-mix(in oklch, var(--pico-home-cyan) 24%, transparent);
+  stroke-width: 0.15;
+  stroke-dasharray: 0.3 1.8;
+}
+
+.pico-bloom-orbit-inner {
+  stroke-dasharray: none;
+  stroke-opacity: 0.55;
+}
+
+.pico-bloom-wire {
+  stroke: var(--border);
+  stroke-width: 0.25;
+}
+
+.pico-bloom-signal {
+  stroke: var(--primary);
+  stroke-width: 0.5;
+  stroke-dasharray: 1.5 3;
+  animation: pico-home-signal 1.4s linear infinite;
+}
+
+.pico-bloom-signal-paused {
+  animation-play-state: paused;
+}
+
+.pico-bloom-halo {
+  background: radial-gradient(circle, rgb(248 118 43 / 0.19), transparent 70%);
+  filter: blur(14px);
+}
+
+.pico-bloom-flower {
+  filter: drop-shadow(0 14px 18px rgb(13 22 39 / 0.18));
+}
+
+.pico-bloom-provider {
+  border-color: var(--border);
+  background: var(--card);
+  box-shadow: 0 4px 12px -10px rgb(13 22 39 / 0.16);
+}
+
+.pico-bloom-provider-active,
+.pico-bloom-provider-active:hover {
+  border-color: color-mix(in oklch, var(--primary) 50%, var(--border));
+  color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 5%, var(--card));
+  box-shadow:
+    0 0 0 4px color-mix(in oklch, var(--primary) 5%, transparent),
+    0 8px 20px -14px color-mix(in oklch, var(--primary) 65%, transparent);
+}
+
+/* The hero signal field: a halftone aperture with one live route. */
+.pico-field-frame {
+  border-color: color-mix(in oklch, var(--pico-home-cyan) 20%, var(--border));
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklch, var(--card) 97%, #8cd5d8 3%),
+    var(--card)
+  );
+  box-shadow:
+    0 20px 70px -38px rgb(13 22 39 / 0.2),
+    0 2px 4px -2px rgb(13 22 39 / 0.04);
+}
+
+.pico-field-request {
+  border-color: var(--border);
+  background: color-mix(in oklch, var(--background) 75%, transparent);
+}
+
+.pico-field-map {
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in oklch, var(--primary) 4%, transparent),
+    transparent 62%
+  );
+}
+
+.pico-field-wire {
+  stroke: var(--border);
+  stroke-width: 0.22;
+}
+
+.pico-field-signal {
+  stroke: var(--primary);
+  stroke-width: 0.55;
+  stroke-linecap: round;
+  stroke-dasharray: 1.6 2.8;
+  animation: pico-field-flow 1.15s linear infinite;
+}
+
+.pico-field-aperture {
+  fill: none;
+  stroke: color-mix(in oklch, var(--primary) 42%, transparent);
+  stroke-width: 0.3;
+  stroke-dasharray: 0.45 1.35;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pico-field-spin 32s linear infinite;
+}
+
+.pico-field-ripple {
+  fill: none;
+  stroke: color-mix(in oklch, var(--primary) 55%, transparent);
+  stroke-width: 0.35;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pico-field-ripple 3.2s ease-out infinite;
+}
+
+.pico-field-ripple-late {
+  animation-delay: 1.6s;
+}
+
+.pico-field-paused {
+  animation-play-state: paused;
+}
+
+.pico-field-provider {
+  border-color: var(--border);
+  color: var(--muted-foreground);
+  background: color-mix(in oklch, var(--card) 92%, transparent);
+  box-shadow: 0 4px 12px -10px rgb(13 22 39 / 0.16);
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.pico-field-provider:hover {
+  color: var(--foreground);
+  border-color: color-mix(in oklch, var(--primary) 28%, var(--border));
+}
+
+.pico-field-provider-active,
+.pico-field-provider-active:hover {
+  border-color: color-mix(in oklch, var(--primary) 48%, var(--border));
+  color: var(--primary);
+  background: color-mix(in oklch, var(--primary) 5%, var(--card));
+  box-shadow:
+    0 0 0 4px color-mix(in oklch, var(--primary) 5%, transparent),
+    0 8px 20px -14px color-mix(in oklch, var(--primary) 65%, transparent);
+}
+
+@keyframes pico-field-flow {
+  to {
+    stroke-dashoffset: -8.8;
+  }
+}
+
+@keyframes pico-field-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pico-field-ripple {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.9);
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.3);
+  }
+}
+
+.pico-home-check {
+  color: var(--pico-home-cyan);
+  background: color-mix(in oklch, var(--pico-home-cyan) 9%, transparent);
+}
+
+.pico-home-doc-link {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 5px;
+}
+
+.pico-home-doc-link:hover {
+  color: var(--primary);
+  text-decoration-color: var(--primary);
+}
+
+.pico-code-window {
+  color: #f2efe9;
+  background: var(--pico-home-ink);
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow: 0 28px 60px -36px rgb(13 22 39 / 0.5);
+}
+
+.pico-code-tabs [data-slot='tabs-trigger'] {
+  color: rgb(242 239 233 / 0.65);
+}
+
+.pico-code-tabs [data-slot='tabs-trigger'][data-active] {
+  color: #ffa76d;
+  background: transparent;
+}
+
+.pico-code-tabs [data-slot='tabs-trigger']::after {
+  background: #ffa76d;
+}
+
+.pico-code-tabs [data-slot='tabs-trigger']:hover {
+  color: #fff;
+}
+
+.pico-code-copy {
+  color: rgb(242 239 233 / 0.75);
+}
+
+.pico-code-copy:hover {
+  color: #fff;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.pico-code-content {
+  color: #b8dde0;
+  scrollbar-color: #465063 transparent;
+}
+
+.pico-code-panel {
+  animation: pico-code-enter 180ms ease-out;
+}
+
+.pico-home-feature {
+  border: 1px solid transparent;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.pico-home-feature:hover {
+  border-color: color-mix(in oklch, var(--primary) 30%, transparent);
+  box-shadow: 0 12px 30px -22px
+    color-mix(in oklch, var(--primary) 50%, transparent);
+}
+
+.pico-home-step {
+  color: var(--primary);
+  border-color: color-mix(in oklch, var(--primary) 25%, var(--border));
+  background: var(--background);
+  box-shadow: 0 0 0 6px var(--background);
+}
+
+.pico-home-cta {
+  background:
+    radial-gradient(
+      ellipse at 100% 100%,
+      rgb(91 174 181 / 0.09),
+      transparent 48%
+    ),
+    color-mix(in oklch, var(--primary) 4%, var(--card));
+  border-color: color-mix(in oklch, var(--primary) 17%, var(--border));
+}
+
+.pico-home-cta-field {
+  background-image: radial-gradient(
+    color-mix(in oklch, var(--primary) 55%, transparent) 1px,
+    transparent 1.3px
+  );
+  background-size: 16px 16px;
+  mask-image: radial-gradient(
+    ellipse 74% 92% at 76% 52%,
+    #000 8%,
+    transparent 74%
+  );
+  opacity: 0.38;
+}
+
+@media (min-width: 768px) {
+  .pico-home-steps::before {
+    position: absolute;
+    top: 20px;
+    right: 15%;
+    left: 20px;
+    height: 1px;
+    content: '';
+    background-image: repeating-linear-gradient(
+      to right,
+      color-mix(in oklch, var(--primary) 34%, var(--border)) 0 5px,
+      transparent 5px 11px
+    );
+  }
+
+  .pico-home-steps::after {
+    position: absolute;
+    top: 17px;
+    left: 20px;
+    width: 7px;
+    height: 7px;
+    content: '';
+    border-radius: 999px;
+    background: var(--primary);
+    box-shadow: 0 0 0 4px
+      color-mix(in oklch, var(--primary) 10%, transparent);
+    animation: pico-step-signal 6.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+}
+
+@keyframes pico-step-signal {
+  0%,
+  6% {
+    left: 20px;
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  90%,
+  100% {
+    left: calc(85% - 7px);
+    opacity: 0;
+  }
+}
+
+@keyframes pico-home-signal {
+  to {
+    stroke-dashoffset: -13.5;
+  }
+}
+
+@keyframes pico-code-enter {
+  from {
+    opacity: 0.5;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pico-bloom-signal,
+  .pico-code-panel,
+  .pico-field-signal,
+  .pico-field-aperture,
+  .pico-field-ripple {
+    animation: none;
+  }
+  .pico-home-steps::after {
+    display: none;
+  }
+  .pico-bloom-provider,
+  .pico-field-provider,
+  .pico-home-feature,
+  .pico-home-primary {
+    transition: none;
+  }
+}

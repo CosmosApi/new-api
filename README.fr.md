@@ -1,8 +1,10 @@
 <div align="center">
 
-![new-api](/web/public/logo.png)
+![PicoAPI](/web/public/logo.png)
 
-# New API
+# PicoAPI
+
+PicoAPI est une version modifiée de [New API](https://github.com/QuantumNous/new-api). L’identité visuelle et la compilation locale ont été modifiées le 2026-11-12.
 
 **Une passerelle IA pour les modèles, les applications et les agents**
 
@@ -57,7 +59,7 @@
 
 ## 📝 Description du projet
 
-New API est une passerelle IA auto-hébergée pour les applications, les agents et les équipes. Connectez vos fournisseurs de modèles, exposez une API commune à vos clients et gérez le routage, les accès, les usages et les coûts depuis une même console.
+PicoAPI est une passerelle IA auto-hébergée pour les applications, les agents et les équipes. Connectez vos fournisseurs de modèles, exposez une API commune à vos clients et gérez le routage, les accès, les usages et les coûts depuis une même console.
 
 Utilisez-la pour partager des accès autorisés au sein d'une équipe, changer de fournisseur sans reconfigurer chaque client ou exploiter un service privé multi-modèles. Les fournisseurs incluent OpenAI, Anthropic, Google Gemini, Azure OpenAI, AWS Bedrock, Vertex AI, DeepSeek, Qwen et d'autres services compatibles.
 
@@ -152,12 +154,13 @@ Ce README décrit le code source actuel. Consultez les notes de la version que v
 Cette commande démarre une instance SQLite accessible uniquement depuis la machine locale :
 
 ```bash
+docker build -t picoapi:local .
 mkdir -p data
-docker run --name new-api -d --restart unless-stopped \
+docker run --name picoapi -d --restart unless-stopped \
   -p 127.0.0.1:3000:3000 \
   -e TZ=Asia/Shanghai \
   -v "$(pwd)/data:/data" \
-  calciumion/new-api:latest
+  picoapi:local
 ```
 
 Ouvrez [http://localhost:3000](http://localhost:3000) et suivez l'assistant pour créer le compte administrateur. Le répertoire `data` conserve la base SQLite lors du remplacement du conteneur.
@@ -169,18 +172,18 @@ Ouvrez [http://localhost:3000](http://localhost:3000) et suivez l'assistant pour
 3. Créez une clé API dans la console, autorisée à accéder au même groupe et aux mêmes modèles.
 4. Pour un client compatible OpenAI, utilisez `http://localhost:3000/v1` comme URL de base et la **clé émise par New API**.
 
-Définissez `NEW_API_KEY` dans votre shell avec cette clé, puis listez les modèles accessibles :
+Définissez `PICOAPI_KEY` dans votre shell avec cette clé, puis listez les modèles accessibles :
 
 ```bash
 curl --fail-with-body http://localhost:3000/v1/models \
-  -H "Authorization: Bearer ${NEW_API_KEY}"
+  -H "Authorization: Bearer ${PICOAPI_KEY}"
 ```
 
 Appelez ensuite Responses en remplaçant `your-enabled-model` par un modèle activé qui prend en charge cette interface :
 
 ```bash
 curl --fail-with-body http://localhost:3000/v1/responses \
-  -H "Authorization: Bearer ${NEW_API_KEY}" \
+  -H "Authorization: Bearer ${PICOAPI_KEY}" \
   -H "Content-Type: application/json" \
   -d '{"model":"your-enabled-model","input":"Hello!"}'
 ```
@@ -191,17 +194,16 @@ curl --fail-with-body http://localhost:3000/v1/responses \
 
 ### Docker Compose
 
-La [configuration Compose](./docker-compose.yml) du dépôt démarre **New API + PostgreSQL + Redis** par défaut. Elle contient aussi des exemples pour MySQL et une base de journaux ClickHouse distincte.
+La [configuration Compose](./docker-compose.yml) du dépôt démarre **PicoAPI + PostgreSQL + Redis** par défaut. Elle contient aussi des exemples pour MySQL et une base de journaux ClickHouse distincte.
 
 ```bash
-git clone https://github.com/QuantumNous/new-api.git
-cd new-api
+cd /path/to/your/checkout
 ```
 
 Avant de démarrer, modifiez `docker-compose.yml` : remplacez les mots de passe d'exemple de la base et de Redis dans les services et les chaînes de connexion, puis définissez un `SESSION_SECRET` aléatoire et persistant (générable avec `openssl rand -hex 32`). Pour une console HTTPS, définissez `SESSION_COOKIE_SECURE=true` et renseignez son origine HTTPS publique exacte dans `SESSION_COOKIE_TRUSTED_URL`.
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 docker compose logs -f new-api
 ```
 
@@ -303,19 +305,6 @@ Pour signaler un bug, indiquez la version, le déploiement, les étapes de repro
 
 ---
 
-## 📜 Licence
-
-Ce projet est sous licence [GNU Affero General Public License v3.0 (AGPLv3)](./LICENSE).
-
-Des [conditions supplémentaires](./NOTICE) s'appliquent au titre de la section 7 de l'AGPLv3. Les versions modifiées doivent conserver la mention `Frontend design and development by New API contributors.` dans les mentions légales appropriées et les emplacements visibles de l'interface dédiés aux informations, au droit, au pied de page ou aux attributions, ainsi qu'un lien visible vers le projet original : <https://github.com/QuantumNous/new-api>.
-
-Il s'agit d'un projet open-source développé sur la base de [One API](https://github.com/songquanpeng/one-api) (licence MIT).
-
-Si les politiques de votre organisation ne permettent pas l'utilisation de logiciels sous licence AGPLv3, ou si vous souhaitez éviter les obligations open-source de l'AGPLv3, veuillez nous contacter à : [support@quantumnous.com](mailto:support@quantumnous.com)
-
-Consultez [NOTICE](./NOTICE) et les [licences tierces](./THIRD-PARTY-LICENSES.md) pour les attributions et les dépendances.
-
----
 
 ## 🌟 Historique des étoiles
 
@@ -329,7 +318,7 @@ Consultez [NOTICE](./NOTICE) et les [licences tierces](./THIRD-PARTY-LICENSES.md
 
 <div align="center">
 
-### 💖 Merci d'utiliser New API
+### 💖 Merci d'utiliser PicoAPI
 
 Si ce projet vous est utile, bienvenue à nous donner une ⭐️ Étoile！
 

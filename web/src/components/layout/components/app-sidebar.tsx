@@ -16,9 +16,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { Link } from '@tanstack/react-router'
+import { ArrowUpRight } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useTranslation } from 'react-i18next'
 
-import { Sidebar, SidebarContent, SidebarRail } from '@/components/ui/sidebar'
+import { PicoMark } from '@/components/brand/pico-mark'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarRail,
+  useSidebar,
+} from '@/components/ui/sidebar'
 import { useLayout } from '@/context/layout-provider'
 import { useSidebarView } from '@/hooks/use-sidebar-view'
 import { MOTION_TRANSITION, MOTION_VARIANTS } from '@/lib/motion'
@@ -44,15 +57,21 @@ import { SidebarViewHeader } from './sidebar-view-header'
  * in the registry; this component requires no changes.
  */
 export function AppSidebar() {
+  const { t } = useTranslation()
+  const { setOpenMobile } = useSidebar()
   const { collapsible, variant } = useLayout()
   const { key, view, navGroups } = useSidebarView()
   const shouldReduce = useReducedMotion()
 
   return (
-    <Sidebar collapsible={collapsible} variant={variant}>
+    <Sidebar
+      collapsible={collapsible}
+      variant={variant}
+      className='pico-console-sidebar'
+    >
       {view && <SidebarViewHeader view={view} />}
 
-      <SidebarContent className='py-2'>
+      <SidebarContent className='pico-sidebar-content pt-3 pb-2'>
         <AnimatePresence mode='wait' initial={false}>
           <motion.div
             key={key}
@@ -70,6 +89,36 @@ export function AppSidebar() {
           </motion.div>
         </AnimatePresence>
       </SidebarContent>
+
+      <SidebarFooter className='pico-sidebar-footer'>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size='lg'
+              tooltip={t('Explore models')}
+              aria-label={t('Explore models')}
+              className='pico-model-link'
+              render={
+                <Link to='/pricing' onClick={() => setOpenMobile(false)} />
+              }
+            >
+              <PicoMark animated={false} className='size-8 shrink-0' />
+              <span className='min-w-0 flex-1 group-data-[collapsible=icon]:hidden'>
+                <span className='block truncate text-xs font-semibold'>
+                  {t('Explore models')}
+                </span>
+                <span className='text-muted-foreground mt-0.5 block truncate text-[10px]'>
+                  {t('Compare model pricing')}
+                </span>
+              </span>
+              <ArrowUpRight
+                className='size-3.5 group-data-[collapsible=icon]:hidden'
+                aria-hidden='true'
+              />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>

@@ -16,12 +16,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { MeteorField } from '@/features/home/components/brand/meteor-field'
+
 import type { TopNavLink } from '../types'
 import { PublicHeader, type PublicHeaderProps } from './public-header'
 
 type PublicLayoutProps = {
   children: React.ReactNode
   showMainContainer?: boolean
+  /** 禁用流星雨背景（首页自己包了流星容器，避免重复） */
+  disableMeteorBackground?: boolean
   navContent?: React.ReactNode
   headerProps?: Omit<PublicHeaderProps, 'navContent'>
   navLinks?: TopNavLink[]
@@ -34,7 +38,10 @@ type PublicLayoutProps = {
 
 export function PublicLayout(props: PublicLayoutProps) {
   return (
-    <div className='bg-background text-foreground relative min-h-svh overflow-x-clip'>
+    <div className='pico-public bg-background text-foreground relative min-h-svh overflow-x-clip'>
+      {!props.disableMeteorBackground && (
+        <MeteorField className='fixed inset-0 -z-10' />
+      )}
       <PublicHeader
         navContent={props.navContent}
         navLinks={props.navLinks}

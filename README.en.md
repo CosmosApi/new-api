@@ -1,8 +1,10 @@
 <div align="center">
 
-![new-api](/web/public/logo.png)
+![PicoAPI](/web/public/logo.png)
 
-# New API
+# PicoAPI
+
+PicoAPI is a modified version of [New API](https://github.com/QuantumNous/new-api). Branding and local build changes dated 2026-11-12.
 
 **An AI gateway for models, applications, and agents**
 
@@ -60,7 +62,7 @@
 
 ## 📝 Project Description
 
-New API is a self-hosted AI gateway for applications, agents, and teams. Connect upstream model services, expose a consistent API to your clients, and manage routing, access, usage, and costs in one place.
+PicoAPI is a self-hosted AI gateway for applications, agents, and teams. Connect upstream model services, expose a consistent API to your clients, and manage routing, access, usage, and costs in one place.
 
 Use it to share authorized model access across a team, switch providers without configuring every client again, or operate a private multi-model service with a web console. Upstreams include OpenAI, Anthropic, Google Gemini, Azure OpenAI, AWS Bedrock, Vertex AI, DeepSeek, Qwen, and other compatible services.
 
@@ -171,12 +173,13 @@ This README describes the current source tree. Check the release notes for the v
 This starts a single instance with SQLite and binds it to localhost:
 
 ```bash
+docker build -t picoapi:local .
 mkdir -p data
-docker run --name new-api -d --restart unless-stopped \
+docker run --name picoapi -d --restart unless-stopped \
   -p 127.0.0.1:3000:3000 \
   -e TZ=Asia/Shanghai \
   -v "$(pwd)/data:/data" \
-  calciumion/new-api:latest
+  picoapi:local
 ```
 
 Open [http://localhost:3000](http://localhost:3000) and complete the setup wizard to create the administrator account. The `data` directory persists the SQLite database across container replacements.
@@ -186,20 +189,20 @@ Open [http://localhost:3000](http://localhost:3000) and complete the setup wizar
 1. Add a channel with your upstream API key, available models, and group assignment; run a channel test.
 2. Configure model pricing and ensure the user has quota or a valid subscription.
 3. Create an API key in the console with access to the same group and models.
-4. Set your client's base URL to `http://localhost:3000/v1` for OpenAI-compatible clients and use the **New API-issued key**.
+4. Set your client's base URL to `http://localhost:3000/v1` for OpenAI-compatible clients and use the **PicoAPI-issued key**.
 
-Set `NEW_API_KEY` in your shell to that key. List the models accessible to it:
+Set `PICOAPI_KEY` in your shell to that key. List the models accessible to it:
 
 ```bash
 curl --fail-with-body http://localhost:3000/v1/models \
-  -H "Authorization: Bearer ${NEW_API_KEY}"
+  -H "Authorization: Bearer ${PICOAPI_KEY}"
 ```
 
 Then call Responses, replacing `your-enabled-model` with an enabled model that supports this interface:
 
 ```bash
 curl --fail-with-body http://localhost:3000/v1/responses \
-  -H "Authorization: Bearer ${NEW_API_KEY}" \
+  -H "Authorization: Bearer ${PICOAPI_KEY}" \
   -H "Content-Type: application/json" \
   -d '{"model":"your-enabled-model","input":"Hello!"}'
 ```
@@ -210,17 +213,16 @@ curl --fail-with-body http://localhost:3000/v1/responses \
 
 ### Docker Compose
 
-The repository's [Compose configuration](./docker-compose.yml) starts **New API + PostgreSQL + Redis** by default. It also contains examples for MySQL and a separate ClickHouse log database.
+The repository's [Compose configuration](./docker-compose.yml) starts **PicoAPI + PostgreSQL + Redis** by default. It also contains examples for MySQL and a separate ClickHouse log database.
 
 ```bash
-git clone https://github.com/QuantumNous/new-api.git
-cd new-api
+cd /path/to/your/checkout
 ```
 
 Before starting, edit `docker-compose.yml`: replace the database and Redis example passwords in both the services and connection strings, and set a persistent random `SESSION_SECRET` (generate one with `openssl rand -hex 32`). For an HTTPS console, configure `SESSION_COOKIE_SECURE=true` and `SESSION_COOKIE_TRUSTED_URL` with its exact public HTTPS origin.
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 docker compose logs -f new-api
 ```
 
@@ -354,7 +356,7 @@ See [NOTICE](./NOTICE) and [third-party licenses](./THIRD-PARTY-LICENSES.md) for
 
 <div align="center">
 
-### 💖 Thank you for using New API
+### 💖 Thank you for using PicoAPI
 
 If this project is helpful to you, welcome to give us a ⭐️ Star！
 

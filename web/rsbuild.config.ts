@@ -6,6 +6,8 @@ import { pluginReact } from '@rsbuild/plugin-react'
 import { pluginTailwindcss } from '@rsbuild/plugin-tailwindcss'
 import { tanstackRouter } from '@tanstack/router-plugin/rspack'
 
+import { picoIconCatalog } from './config/icon-catalog.ts'
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig(({ envMode }) => {
@@ -53,6 +55,10 @@ export default defineConfig(({ envMode }) => {
       },
     },
     source: {
+      define: {
+        ...env.publicVars,
+        __PICOAPI_ICON_CATALOG__: JSON.stringify(picoIconCatalog),
+      },
       entry: {
         index: './src/main.tsx',
       },

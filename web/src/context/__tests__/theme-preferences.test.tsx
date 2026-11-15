@@ -28,12 +28,12 @@ import { ThemeProvider, useTheme } from '@/context/theme-provider'
 import { initializeFrontendCache } from '@/lib/frontend-cache'
 
 const savedPreferences = {
-  'newapi:theme:v1:mode': 'dark',
-  'newapi:theme:v1:preset': 'rose-garden',
-  'newapi:theme:v1:font': 'serif',
-  'newapi:theme:v1:radius': 'lg',
-  'newapi:theme:v1:scale': 'sm',
-  'newapi:theme:v1:content-layout': 'centered',
+  'picoapi:theme:v1:mode': 'dark',
+  'picoapi:theme:v1:preset': 'rose-garden',
+  'picoapi:theme:v1:font': 'serif',
+  'picoapi:theme:v1:radius': 'lg',
+  'picoapi:theme:v1:scale': 'sm',
+  'picoapi:theme:v1:content-layout': 'centered',
 }
 
 function ThemeControls() {

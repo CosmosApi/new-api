@@ -29,6 +29,9 @@ For commercial licensing, please contact support@quantumnous.com
 
 @import './theme.css';
 @import './theme-presets.css';
+@import './picoapi-redesign.css';
+@import './pico-ui.css';
+@import './brand.css';
 
 @layer base {
   :root {
@@ -554,6 +557,42 @@ For commercial licensing, please contact support@quantumnous.com
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* PicoAPI landing — petals bloom once on mount, and a request travels along
+   whichever provider line is currently highlighted. */
+.pico-petal {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pico-bloom 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pico-bloom {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pico-flow-line {
+  animation: pico-flow 900ms linear infinite;
+}
+
+@keyframes pico-flow {
+  to {
+    stroke-dashoffset: -11.2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pico-petal,
+  .pico-flow-line {
+    animation: none !important;
   }
 }
 

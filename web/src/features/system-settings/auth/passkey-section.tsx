@@ -334,9 +334,9 @@ export function PasskeySection(props: PasskeySectionProps) {
   return (
     <SettingsSection title={t('Passkey Authentication')}>
       <Form {...form}>
-        <SettingsForm onSubmit={form.handleSubmit(onSubmit)}>
+        <SettingsForm onSubmit={(event) => form.handleSubmit(onSubmit)(event)}>
           <SettingsPageFormActions
-            onSave={form.handleSubmit(onSubmit)}
+            onSave={() => form.handleSubmit(onSubmit)()}
             isSaving={isSaving}
           />
           <FormField
@@ -370,7 +370,7 @@ export function PasskeySection(props: PasskeySectionProps) {
                 <FormLabel>{t('Passkey display name')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder={t('e.g. New API Console')}
+                    placeholder={t('e.g. PicoAPI Console')}
                     value={field.value ?? ''}
                     onChange={(event) => field.onChange(event.target.value)}
                     name={field.name}

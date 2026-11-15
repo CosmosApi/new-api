@@ -1,0 +1,254 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+
+/* ========== 内容区域背景容器 ========== */
+
+.content-background {
+  position: relative;
+  width: 100%;
+}
+
+/* ========== 方案 1：微光点阵（推荐） ========== */
+.content-background-dots {
+  background-image: radial-gradient(
+    circle,
+    rgba(232, 110, 48, 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
+:root:not(.dark) .content-background-dots {
+  background-image: radial-gradient(
+    circle,
+    rgba(232, 110, 48, 0.06) 1px,
+    transparent 1px
+  );
+}
+
+/* ========== 方案 2：动态网格 ========== */
+.content-background-grid {
+  background-image: linear-gradient(
+      rgba(232, 110, 48, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(232, 110, 48, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+:root:not(.dark) .content-background-grid {
+  background-image: linear-gradient(
+      rgba(232, 110, 48, 0.04) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(232, 110, 48, 0.04) 1px, transparent 1px);
+}
+
+/* ========== 方案 3：柔和波纹 ========== */
+.content-background-waves {
+  background-image: radial-gradient(
+      ellipse at 30% 20%,
+      rgba(232, 110, 48, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 70% 80%,
+      rgba(232, 110, 48, 0.04) 0%,
+      transparent 50%
+    );
+  background-size: 100% 100%;
+}
+
+/* ========== 方案 4：纯色（无纹理） ========== */
+.content-background-plain {
+  background: transparent;
+}
+
+/* ========== 大号斜向流星层 ========== */
+
+.content-meteors {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.content-meteor {
+  position: absolute;
+  left: var(--start-x);
+  top: var(--start-y);
+  width: 3px;
+  height: 180px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 240, 220, 0.85) 15%,
+    rgba(255, 200, 120, 0.6) 40%,
+    rgba(255, 154, 92, 0.4) 65%,
+    rgba(232, 110, 48, 0.2) 85%,
+    rgba(232, 110, 48, 0) 100%
+  );
+  filter: blur(1px);
+  border-radius: 50% 50% 0 0;
+  transform: rotate(215deg);
+  animation: content-meteor-streak var(--duration) ease-out var(--delay) infinite;
+  opacity: 0;
+}
+
+/* 流星针尖头部光斑（顶部） */
+.content-meteor::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 240, 220, 0.9) 40%,
+    rgba(255, 200, 120, 0.4) 80%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 12px 3px rgba(255, 255, 255, 0.95),
+    0 0 24px 6px rgba(255, 200, 120, 0.7),
+    0 0 36px 9px rgba(255, 154, 92, 0.4);
+}
+
+/* 浅色主题流星 */
+:root:not(.dark) .content-meteor {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 250, 230, 1) 0%,
+    rgba(255, 230, 180, 0.8) 15%,
+    rgba(255, 180, 100, 0.55) 40%,
+    rgba(232, 110, 48, 0.35) 65%,
+    rgba(232, 110, 48, 0.15) 85%,
+    rgba(232, 110, 48, 0) 100%
+  );
+}
+
+:root:not(.dark) .content-meteor::before {
+  background: radial-gradient(
+    circle,
+    rgba(255, 250, 230, 1) 0%,
+    rgba(255, 230, 180, 0.85) 40%,
+    rgba(255, 180, 100, 0.35) 80%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 12px 3px rgba(255, 240, 200, 0.9),
+    0 0 24px 6px rgba(255, 180, 100, 0.6),
+    0 0 36px 9px rgba(232, 110, 48, 0.3);
+}
+
+/* 流星运动：从右上往左下划过，中途消失 */
+@keyframes content-meteor-streak {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(215deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50vw, 50vh) rotate(215deg);
+  }
+}
+
+/* ========== 鼠标点击涟漪 ========== */
+
+.content-ripple {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 3px solid rgba(255, 154, 92, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: content-ripple-expand 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    forwards;
+}
+
+/* 内圈光晕 */
+.content-ripple::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 2px solid rgba(255, 200, 120, 0.5);
+  border-radius: 50%;
+  animation: content-ripple-fade 1.5s ease-out forwards;
+}
+
+:root:not(.dark) .content-ripple {
+  border-color: rgba(232, 110, 48, 0.6);
+}
+
+:root:not(.dark) .content-ripple::before {
+  border-color: rgba(232, 110, 48, 0.4);
+}
+
+@keyframes content-ripple-expand {
+  0% {
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    opacity: 1;
+  }
+  100% {
+    width: 260px;
+    height: 260px;
+    margin: -130px 0 0 -130px;
+    opacity: 0;
+  }
+}
+
+@keyframes content-ripple-fade {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+/* ========== prefers-reduced-motion 降级 ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .content-meteor {
+    display: none;
+  }
+  .content-ripple {
+    animation: none;
+    display: none;
+  }
+  .content-ripple::before {
+    display: none;
+  }
+}
+

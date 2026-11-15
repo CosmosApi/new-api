@@ -35,6 +35,17 @@ func TestTaskPluginDisabledFactoryKeysRoundTripAndDedupe(t *testing.T) {
 	assert.False(t, IsTaskPluginFactoryDisabled("google"))
 }
 
+func TestMarketplaceSourcesRequireExplicitConfiguration(t *testing.T) {
+	setupTaskPluginDisabledFactoryKeysTest(t)
+	assert.Equal(t, "[]", TaskPluginMarketplaceSources2JsonString())
+	for _, raw := range []string{"", "null", "[]", "invalid"} {
+		common.OptionMap[TaskPluginMarketplaceSourcesKey] = raw
+		assert.Empty(t, GetTaskPluginMarketplaceSources())
+	}
+	common.OptionMap[TaskPluginMarketplaceSourcesKey] = `[{"name":"Custom","index_url":"https://plugins.example/index.json"}]`
+	assert.Equal(t, []TaskPluginMarketplaceSource{{Name: "Custom", IndexURL: "https://plugins.example/index.json"}}, GetTaskPluginMarketplaceSources())
+}
+
 func TestTaskPluginDisabledFactoryKeysBadJSONReturnsEmpty(t *testing.T) {
 	setupTaskPluginDisabledFactoryKeysTest(t)
 

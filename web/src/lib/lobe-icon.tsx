@@ -25,7 +25,6 @@ For commercial licensing, please contact support@quantumnous.com
  * - Chained properties: "OpenAI.Avatar.type={'platform'}"
  * - Size parameter: getLobeIcon("OpenAI", 20)
  */
-import { toc } from '@lobehub/icons/es/toc'
 import {
   lazy,
   Suspense,
@@ -38,7 +37,20 @@ import sglangLogo from '@/assets/brand-icons/sglang.svg'
 import { IconSub2api } from '@/assets/custom/icon-sub2api'
 import { IconWan } from '@/assets/custom/icon-wan'
 
+declare const __PICOAPI_ICON_CATALOG__: typeof import('@lobehub/icons/es/toc').toc
+const toc = __PICOAPI_ICON_CATALOG__
+
 const CUSTOM_ICONS: Record<string, ComponentType<{ size?: number }>> = {
+  PicoAPI: (props) => (
+    <img
+      src='/pico-mark.svg'
+      alt=''
+      aria-hidden='true'
+      width={props.size ?? 20}
+      height={props.size ?? 20}
+      className='object-contain'
+    />
+  ),
   SGLang: (props) => (
     <img
       src={sglangLogo}
@@ -165,6 +177,7 @@ export function getLobeIcon(
     IconComponent = lazy(() =>
       import(
         /* webpackInclude: /[\\/]components[\\/](Mono|Avatar|Brand|BrandColor|Color|Combine|Text|TextCn|TextColor|Simple|Morden)\.js$/ */
+        /* webpackExclude: /[\\/]NewAPI[\\/]/ */
         `@lobehub/icons/es/${baseKey}/components/${variant}.js`
       ).catch(() => ({
         default: (props: Record<string, unknown>) =>

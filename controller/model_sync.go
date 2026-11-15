@@ -21,12 +21,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 上游地址
-const (
-	upstreamModelsURL  = "https://basellm.github.io/llm-metadata/api/newapi/models.json"
-	upstreamVendorsURL = "https://basellm.github.io/llm-metadata/api/newapi/vendors.json"
-)
-
 func normalizeLocale(locale string) (string, bool) {
 	switch strings.ToLower(strings.TrimSpace(locale)) {
 	case "", "zh", "zh-cn":
@@ -41,7 +35,7 @@ func normalizeLocale(locale string) (string, bool) {
 }
 
 func getUpstreamBase() string {
-	return common.GetEnvOrDefaultString("SYNC_UPSTREAM_BASE", "https://basellm.github.io/llm-metadata")
+	return strings.TrimSpace(common.GetEnvOrDefaultString("SYNC_UPSTREAM_BASE", ""))
 }
 
 func getUpstreamURLs(locale string) (modelsURL, vendorsURL string) {
@@ -256,6 +250,9 @@ func fetchMetadataCatalog(c *gin.Context, locale string) (metadataSyncSource, ma
 	resolved, valid := normalizeLocale(locale)
 	if !valid {
 		return metadataSyncSource{}, nil, nil, errors.New("unsupported metadata language")
+	}
+	if getUpstreamBase() == "" {
+		return metadataSyncSource{}, nil, nil, errors.New("No metadata source configured.")
 	}
 	modelsURL, vendorsURL := getUpstreamURLs(resolved)
 	source := metadataSyncSource{Locale: resolved, ModelsURL: modelsURL, VendorsURL: vendorsURL}

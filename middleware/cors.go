@@ -17,7 +17,7 @@ func CORS() gin.HandlerFunc {
 
 func Version() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Header("X-New-Api-Version", common.Version)
+		c.Header("pico-api-version", common.Version)
 		c.Next()
 	}
 }
