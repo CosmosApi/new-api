@@ -27,6 +27,8 @@ import type {
 import { getCurrencyDisplay } from '@/lib/currency'
 import { formatChartTime, type TimeGranularity } from '@/lib/time'
 
+import { getBrandChartPalette } from './brand-chart-palette'
+
 type TFunction = (key: string) => string
 type TooltipLineItem = {
   key: string
@@ -40,6 +42,9 @@ type TooltipLineItem = {
 }
 
 export function getDashboardChartColors(domainLength: number): string[] {
+  const brandPalette = getBrandChartPalette()
+  if (brandPalette) return [...brandPalette]
+
   const scheme =
     vchartDefaultDataScheme.find(
       (item) => !item.maxDomainLength || domainLength <= item.maxDomainLength
@@ -268,7 +273,13 @@ export function processChartData(
   const sortedTimes = [...timeTimestamps]
     .sort((a, b) => a[1] - b[1])
     .map(([time]) => time)
-  const sortedModels = [...allModels].sort()
+  // Biggest spender first, so the lead palette colour marks the model that
+  // matters most; ties fall back to name order to keep colours stable.
+  const sortedModels = [...allModels].sort(
+    (a, b) =>
+      (modelTotalsMap.get(b)?.quota ?? 0) -
+        (modelTotalsMap.get(a)?.quota ?? 0) || a.localeCompare(b)
+  )
   const modelColorDomain = [...new Set([...sortedModels, otherLabel])]
   const modelColorRange = getDashboardChartColors(modelColorDomain.length)
   const otherColor = modelColorRange[modelColorDomain.indexOf(otherLabel)]

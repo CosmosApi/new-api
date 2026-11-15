@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { useQueryClient } from '@tanstack/react-query'
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -25,13 +26,15 @@ import { useSystemConfig } from '@/hooks/use-system-config'
 import { getSelf } from '@/lib/api'
 
 import { AffiliateRewardsCard } from './components/affiliate-rewards-card'
+import { MonthlyStatement } from './components/brand/monthly-statement'
+import { RecentTopups } from './components/brand/recent-topups'
+import { WalletSummary } from './components/brand/wallet-summary'
 import { BillingHistoryDialog } from './components/dialogs/billing-history-dialog'
 import { CreemConfirmDialog } from './components/dialogs/creem-confirm-dialog'
 import { PaymentConfirmDialog } from './components/dialogs/payment-confirm-dialog'
 import { TransferDialog } from './components/dialogs/transfer-dialog'
 import { RechargeFormCard } from './components/recharge-form-card'
 import { SubscriptionPlansCard } from './components/subscription-plans-card'
-import { WalletStatsCard } from './components/wallet-stats-card'
 import { DEFAULT_DISCOUNT_RATE, PAYMENT_TYPES } from './constants'
 import {
   useTopupInfo,
@@ -41,11 +44,14 @@ import {
   useCreemPayment,
   useWaffoPayment,
   useWaffoPancakePayment,
+  useMonthlySpend,
+  useRecentTopups,
 } from './hooks'
 import {
   getDefaultPaymentType,
   getMinTopupAmount,
   dispatchSelectedPayment,
+  shouldShowAffiliateRewards,
 } from './lib'
 import type {
   UserWalletData,
@@ -129,6 +135,15 @@ export function Wallet(props: WalletProps) {
     fetchUser()
   }, [fetchUser])
 
+  // After money moves, refresh the balance and the statement cards too.
+  const queryClient = useQueryClient()
+  const monthly = useMonthlySpend()
+  const recentTopups = useRecentTopups()
+  const refreshAfterPayment = useCallback(async () => {
+    await fetchUser()
+    await queryClient.invalidateQueries({ queryKey: ['wallet', 'statement'] })
+  }, [fetchUser, queryClient])
+
   useEffect(() => {
     if (props.initialShowHistory) {
       setBillingDialogOpen(true)
@@ -207,7 +222,7 @@ export function Wallet(props: WalletProps) {
 
     if (success) {
       setConfirmDialogOpen(false)
-      await fetchUser()
+      await refreshAfterPayment()
     }
   }
 
@@ -218,7 +233,7 @@ export function Wallet(props: WalletProps) {
     const success = await redeemCode(redemptionCode)
     if (success) {
       setRedemptionCode('')
-      await fetchUser()
+      await refreshAfterPayment()
     }
   }
 
@@ -226,7 +241,7 @@ export function Wallet(props: WalletProps) {
   const handleTransfer = async (amount: number) => {
     const success = await transferQuota(amount)
     if (success) {
-      await fetchUser()
+      await refreshAfterPayment()
     }
     return success
   }
@@ -245,7 +260,7 @@ export function Wallet(props: WalletProps) {
     if (success) {
       setCreemDialogOpen(false)
       setSelectedCreemProduct(null)
-      await fetchUser()
+      await refreshAfterPayment()
     }
   }
 
@@ -288,7 +303,7 @@ export function Wallet(props: WalletProps) {
         <SectionPageLayout.Title>{t('Wallet')}</SectionPageLayout.Title>
         <SectionPageLayout.Content>
           <div className='mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-5'>
-            <WalletStatsCard user={user} loading={userLoading} />
+            <WalletSummary user={user} loading={userLoading} />
 
             <div
               className={
@@ -335,19 +350,33 @@ export function Wallet(props: WalletProps) {
                 topupInfo={topupInfo}
                 onAvailabilityChange={handleSubscriptionAvailabilityChange}
                 userQuota={user?.quota}
-                onPurchaseSuccess={fetchUser}
+                onPurchaseSuccess={refreshAfterPayment}
               />
             </div>
 
-            <AffiliateRewardsCard
-              user={user}
-              affiliateLink={affiliateLink}
-              onTransfer={() => setTransferDialogOpen(true)}
-              complianceConfirmed={
-                topupInfo?.payment_compliance_confirmed !== false
-              }
-              loading={affiliateLoading}
-            />
+            <div className='grid gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]'>
+              <MonthlyStatement months={monthly.data?.months ?? []} />
+              <RecentTopups
+                records={recentTopups.data ?? []}
+                loading={recentTopups.isLoading}
+                onOpenHistory={() => setBillingDialogOpen(true)}
+              />
+            </div>
+
+            {shouldShowAffiliateRewards(
+              topupInfo?.payment_compliance_confirmed !== false,
+              user
+            ) && (
+              <AffiliateRewardsCard
+                user={user}
+                affiliateLink={affiliateLink}
+                onTransfer={() => setTransferDialogOpen(true)}
+                complianceConfirmed={
+                  topupInfo?.payment_compliance_confirmed !== false
+                }
+                loading={affiliateLoading}
+              />
+            )}
           </div>
         </SectionPageLayout.Content>
       </SectionPageLayout>

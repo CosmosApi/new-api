@@ -16,8 +16,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { useQuery } from '@tanstack/react-query'
+
 import { useStatus } from '@/hooks/use-status'
 
+import { getUptimeStatus } from '../api'
 import type { AnnouncementItem, ApiInfoItem, FAQItem } from '../types'
 
 /**
@@ -58,17 +61,38 @@ export function useFAQ() {
   return useStatusData<FAQItem>('faq_enabled', 'faq')
 }
 
+function hasItems(value: unknown): boolean {
+  return Array.isArray(value) && value.length > 0
+}
+
 /**
- * Get dashboard content panel visibility
+ * Get dashboard content panel visibility. A panel shows only when it is
+ * enabled and has something to show, so an unconfigured panel never takes
+ * up an empty card on the overview.
  */
 export function useDashboardContentVisibility() {
   const { status } = useStatus()
   const hasStatus = Boolean(status)
+  const uptimeEnabled = hasStatus && status?.uptime_kuma_enabled !== false
+  // Uptime monitors are not part of /api/status; ask the uptime endpoint
+  // whether any group is configured.
+  const uptimeQuery = useQuery({
+    queryKey: ['dashboard', 'uptime', 'configured'],
+    queryFn: async () => hasItems((await getUptimeStatus())?.data),
+    enabled: uptimeEnabled,
+    staleTime: 5 * 60 * 1000,
+  })
 
   return {
-    apiInfo: hasStatus && status?.api_info_enabled !== false,
-    announcements: hasStatus && status?.announcements_enabled !== false,
-    faq: hasStatus && status?.faq_enabled !== false,
-    uptimeKuma: hasStatus && status?.uptime_kuma_enabled !== false,
+    apiInfo:
+      hasStatus &&
+      status?.api_info_enabled !== false &&
+      hasItems(status?.api_info),
+    announcements:
+      hasStatus &&
+      status?.announcements_enabled !== false &&
+      hasItems(status?.announcements),
+    faq: hasStatus && status?.faq_enabled !== false && hasItems(status?.faq),
+    uptimeKuma: uptimeEnabled && uptimeQuery.data === true,
   }
 }
