@@ -98,17 +98,16 @@ For commercial licensing, please contact support@quantumnous.com
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 浅色模式：底部渐变线 */
+/* 浅色模式：底部实线边框，无渐变 */
 .pico-public-header .pico-public-nav::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: var(--pico-gradient-border);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  height: 1px;
+  background: var(--pico-border-strong);
+  opacity: 1;
 }
 
 /* 深色模式 */
@@ -119,11 +118,7 @@ For commercial licensing, please contact support@quantumnous.com
 
 /* 滚动时显示渐变底边 */
 .pico-public-header .pico-public-nav[data-scrolled='true'] {
-  box-shadow: var(--pico-shadow-md), var(--pico-shadow-glow);
-}
-
-.pico-public-header .pico-public-nav[data-scrolled='true']::after {
-  opacity: 1;
+  box-shadow: var(--pico-shadow-md);
 }
 
 /* ────────────────────────────────────────────────────────────

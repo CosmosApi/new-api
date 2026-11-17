@@ -199,26 +199,11 @@ export function PublicHeader(props: PublicHeaderProps) {
 
   return (
     <>
-      <header className='pico-public-header pointer-events-none fixed inset-x-0 top-0 z-50'>
-        <div
-          className={cn(
-            // The island narrows as the page scrolls: the same capsule, drawn
-            // tighter, rather than a different shape replacing it.
-            'pointer-events-auto mx-auto transition-[max-width,padding] duration-[620ms] ease-[cubic-bezier(0.34,1.24,0.5,1)]',
-            scrolled
-              ? 'max-w-[52rem] px-3 pt-3'
-              : 'max-w-6xl px-3 pt-3 md:px-6 md:pt-5'
-          )}
+      <header className='pico-public-header'>
+        <nav
+          data-scrolled={scrolled}
+          className='pico-public-nav flex items-center justify-between gap-4'
         >
-          <nav
-            data-scrolled={scrolled}
-            className={cn(
-              'pico-public-nav flex items-center justify-between gap-2 transition-[height,padding,border-radius] duration-[620ms] ease-[cubic-bezier(0.34,1.24,0.5,1)]',
-              scrolled
-                ? 'h-12 rounded-full pr-3 pl-3'
-                : 'h-14 rounded-full pr-3 pl-3 md:h-[3.75rem] md:pr-4 md:pl-4'
-            )}
-          >
             {/* Logo */}
             <div className='@container/system-brand flex min-w-0 flex-1 items-center gap-1 lg:min-w-36'>
               <Link
@@ -356,7 +341,6 @@ export function PublicHeader(props: PublicHeaderProps) {
               </Button>
             </div>
           </nav>
-        </div>
       </header>
 
       {/* Mobile full-screen overlay */}

@@ -16,14 +16,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+/**
+ * Interface languages offered in the UI.
+ *
+ * Each entry carries both its endonym (the language's name written in that
+ * language) and an English name. The endonym is the primary label because a
+ * speaker of the language recognises it instantly, while the English name
+ * acts as the secondary line so users who cannot read the endonym can still
+ * find their language. This makes the selector usable for everyone
+ * regardless of which language the interface is currently rendering in.
+ */
 export const INTERFACE_LANGUAGE_OPTIONS = [
-  { code: 'zhCN', label: '简体中文' },
-  { code: 'en', label: 'English' },
-  { code: 'fr', label: 'Français' },
-  { code: 'ru', label: 'Русский' },
-  { code: 'ja', label: '日本語' },
-  { code: 'vi', label: 'Tiếng Việt' },
-  { code: 'zhTW', label: '繁體中文' },
+  { code: 'zhCN', native: '简体中文', english: 'Chinese (Simplified)' },
+  { code: 'en', native: 'English', english: 'English' },
+  { code: 'fr', native: 'Français', english: 'French' },
+  { code: 'ru', native: 'Русский', english: 'Russian' },
+  { code: 'ja', native: '日本語', english: 'Japanese' },
+  { code: 'vi', native: 'Tiếng Việt', english: 'Vietnamese' },
+  { code: 'zhTW', native: '繁體中文', english: 'Chinese (Traditional)' },
 ] as const
 
 export type InterfaceLanguageCode =

@@ -118,7 +118,10 @@ export function LanguagePreferencesCard(props: LanguagePreferencesCardProps) {
           <Combobox
             options={INTERFACE_LANGUAGE_OPTIONS.map((language) => ({
               value: language.code,
-              label: language.label,
+              // The endonym identifies the language; the English name is the
+              // secondary line for users who cannot read it.
+              label: language.native,
+              description: language.english,
             }))}
             value={currentLanguage}
             onValueChange={handleLanguageChange}

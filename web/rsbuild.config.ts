@@ -74,6 +74,10 @@ export default defineConfig(({ envMode }) => {
     },
     server: {
       host: '0.0.0.0',
+      // Fixed dev port: 3000 is the default backend port and the default
+      // proxy target below, so binding the dev server there makes the
+      // frontend proxy to itself and every /api request hangs.
+      port: 3001,
       strictPort: false,
       proxy: devProxy,
     },

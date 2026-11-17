@@ -140,7 +140,10 @@ export function TaskPlugins() {
             onValueChange={setTab}
             className='flex h-full min-h-0 flex-col gap-3'
           >
-            <TabsList className='max-w-full flex-wrap justify-start group-data-horizontal/tabs:h-auto'>
+            <TabsList
+              variant='segment'
+              className='max-w-full flex-wrap justify-start group-data-horizontal/tabs:h-auto'
+            >
               <TabsTrigger value='installed'>{t('Installed')}</TabsTrigger>
               <TabsTrigger value='marketplace'>{t('Marketplace')}</TabsTrigger>
             </TabsList>

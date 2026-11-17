@@ -372,12 +372,12 @@ export function ApiKeysMutateDrawer({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent className="max-w-4xl aspect-[4/3] max-h-[92vh] overflow-hidden p-0 sm:max-w-4xl">
+        <DialogHeader className="shrink-0 space-y-1 border-b px-6 py-4">
+          <DialogTitle className="text-lg">
             {isUpdate ? t('Update API Key') : t('Create API Key')}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm">
             {isUpdate
               ? t('Update the API key by providing necessary info.')
               : t('Add a new API key by providing necessary info.')}
@@ -389,16 +389,19 @@ export function ApiKeysMutateDrawer({
             onSubmit={form.handleSubmit(onSubmit, onInvalid)}
             aria-busy={!isFormInitialized}
             inert={!isFormInitialized || isSubmitting ? true : undefined}
-            className="space-y-6"
+            className="flex min-h-0 flex-1 flex-col overflow-hidden"
           >
-            <SideDrawerSection>
-              <SideDrawerSectionHeader
-                title={t('Basic Information')}
-                description={t('Set API key basic information')}
-                icon={<KeyRound className='size-4' />}
-                iconTone='info'
-              />
-              <FormField
+            <div className="grid min-h-0 flex-1 grid-cols-1 overflow-y-auto md:grid-cols-2 md:overflow-hidden">
+              {/* Left column: basic information */}
+              <div className="space-y-5 p-6 md:overflow-y-auto md:border-r">
+                <div className="flex items-center gap-2 border-b pb-2.5">
+                  <KeyRound className='size-4 text-blue-600 dark:text-blue-400' />
+                  <div>
+                    <h3 className="text-sm font-semibold">{t('Basic Information')}</h3>
+                    <p className="text-xs text-muted-foreground">{t('Set API key basic information')}</p>
+                  </div>
+                </div>
+                <FormField
                 control={form.control}
                 name='name'
                 render={({ field }) => (
@@ -591,16 +594,17 @@ export function ApiKeysMutateDrawer({
                   )}
                 />
               )}
-            </SideDrawerSection>
+            </div>
 
-            <SideDrawerSection>
-              <SideDrawerSectionHeader
-                title={t('Quota Settings')}
-                description={t('Set quota amount and limits')}
-                icon={<WalletCards className='size-4' />}
-                iconTone='success'
-              />
-              {!unlimitedQuota && (
+              <div className="space-y-5 p-6 md:overflow-y-auto">
+                <div className="flex items-center gap-2 border-b pb-2.5">
+                  <WalletCards className='size-4 text-green-600 dark:text-green-400' />
+                  <div>
+                    <h3 className="text-sm font-semibold">{t('Quota Settings')}</h3>
+                    <p className="text-xs text-muted-foreground">{t('Set quota amount and limits')}</p>
+                  </div>
+                </div>
+                {!unlimitedQuota && (
                 <FormField
                   control={form.control}
                   name='remain_quota_dollars'
@@ -655,33 +659,28 @@ export function ApiKeysMutateDrawer({
                   </FormItem>
                 )}
               />
-            </SideDrawerSection>
 
             <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
-              <SideDrawerSection>
-                <CollapsibleTrigger
-                  render={
-                    <button
-                      type='button'
-                      className='hover:bg-muted/40 flex w-full items-center gap-3 rounded-md py-1.5 text-left transition-colors'
+                <CollapsibleTrigger asChild>
+                  <button
+                    type='button'
+                    className='hover:bg-muted/40 flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left transition-colors'
+                  >
+                    <Settings2 className='size-4 text-purple-600 dark:text-purple-400' />
+                    <div className="flex-1">
+                      <h3 className="text-sm font-semibold">{t('Advanced Settings')}</h3>
+                      <p className="text-xs text-muted-foreground">{t('Set API key access restrictions')}</p>
+                    </div>
+                    <ChevronDown
+                      className={cn(
+                        'text-muted-foreground size-4 shrink-0 transition-transform',
+                        advancedOpen && 'rotate-180'
+                      )}
                     />
-                  }
-                >
-                  <SideDrawerSectionHeader
-                    className='flex-1'
-                    title={t('Advanced Settings')}
-                    description={t('Set API key access restrictions')}
-                    icon={<Settings2 className='size-4' />}
-                  />
-                  <ChevronDown
-                    className={cn(
-                      'text-muted-foreground size-4 shrink-0 transition-transform',
-                      advancedOpen && 'rotate-180'
-                    )}
-                  />
+                  </button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <div className='flex flex-col gap-4 pt-2'>
+                  <div className='flex flex-col gap-4 pt-3'>
                     <FormField
                       control={form.control}
                       name='model_limits'
@@ -763,11 +762,12 @@ export function ApiKeysMutateDrawer({
                     />
                   </div>
                 </CollapsibleContent>
-              </SideDrawerSection>
             </Collapsible>
+              </div>
+            </div>
           </form>
         </Form>
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter className="shrink-0 gap-2 border-t px-6 py-4 sm:gap-2 sm:px-6 sm:py-4">
           <Button
             type='button'
             variant='outline'

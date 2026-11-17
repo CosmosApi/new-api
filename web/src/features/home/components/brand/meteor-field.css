@@ -31,6 +31,8 @@ For commercial licensing, please contact support@quantumnous.com
     #141a2e 40%,
     #1a2038 100%
   );
+  contain: layout style paint;
+  will-change: transform;
 }
 
 /* 浅色模式：浅蓝天空渐变 */
@@ -156,9 +158,12 @@ For commercial licensing, please contact support@quantumnous.com
   );
   border-radius: 50% 50% 0 0;
   filter: blur(0.8px);
-  transform: rotate(215deg);
+  transform: rotate(215deg) translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
   animation: meteor-fall var(--duration) ease-in var(--delay) infinite;
   opacity: 0;
+  will-change: transform;
 }
 
 /* 流星头部白炽光点 */
